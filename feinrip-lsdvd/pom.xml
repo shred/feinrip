@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ feinrip
+
+ Copyright (C) 2014 Richard "Shred" Körber
+   https://github.com/shred/feinrip
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as
+ published by the Free Software Foundation, either version 3 of the
+ License, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.shredzone.feinrip</groupId>
+        <artifactId>feinrip</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>feinrip-lsdvd</artifactId>
+    <name>Feinrip lsdvd module</name>
+    <description>Library for reading DVD structure information from .ifo files</description>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License Version 3</name>
+            <url>LICENSE-LGPL.txt</url>
+        </license>
+    </licenses>
+
+</project>
