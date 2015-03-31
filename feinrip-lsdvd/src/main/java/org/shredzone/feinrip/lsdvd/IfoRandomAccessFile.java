@@ -101,10 +101,13 @@ public class IfoRandomAccessFile extends RandomAccessFile {
      *
      * @param length
      *            number of characters to read
-     * @return String that was read
+     * @return String that was read, or {@code null} if the string was empty
      */
     public String readFixedString(int length) throws IOException {
         byte data[] = readFixedBytes(length);
+        if (data[0] == 0) {
+            return null;
+        }
         return new String(data, "ASCII");
     }
 
