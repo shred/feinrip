@@ -154,19 +154,11 @@ public class TvdbService {
     private static List<TvdbEpisode> findDvdEpisodes(XQuery doc) {
         return doc.select("//Episode")
                 .map(episode -> {
-                    Matcher ms = NUMBER_PATTERN.matcher(episode.text("DVD_season"));
-                    Matcher me = NUMBER_PATTERN.matcher(episode.text("DVD_episodenumber"));
-
-                    if (ms.matches() && me.matches()) {
-                        TvdbEpisode te = new TvdbEpisode();
-                        te.id = Long.parseLong(episode.text("id"));
-                        te.title = episode.text("EpisodeName");
-                        te.season = Integer.parseInt(ms.group(1));
-                        te.episode = Integer.parseInt(me.group(1));
-                        return te;
-                    } else {
-                        return null;
+                    TvdbEpisode te = createEpisode(episode, "Combined_season", "Combined_episodenumber");
+                    if (te == null) {
+                        te = createEpisode(episode, "DVD_season", "DVD_episodenumber");
                     }
+                    return te;
                 })
                 .filter(it -> it != null)
                 .collect(toList());
@@ -174,23 +166,25 @@ public class TvdbService {
 
     private static List<TvdbEpisode> findAiredEpisodes(XQuery doc) {
         return doc.select("//Episode")
-                .map(episode -> {
-                    Matcher ms = NUMBER_PATTERN.matcher(episode.text("SeasonNumber"));
-                    Matcher me = NUMBER_PATTERN.matcher(episode.text("EpisodeNumber"));
-
-                    if (ms.matches() && me.matches()) {
-                        TvdbEpisode te = new TvdbEpisode();
-                        te.id = Long.parseLong(episode.text("id"));
-                        te.title = episode.text("EpisodeName");
-                        te.season = Integer.parseInt(ms.group(1));
-                        te.episode = Integer.parseInt(me.group(1));
-                        return te;
-                    } else {
-                        return null;
-                    }
-                })
+                .map(episode -> createEpisode(episode, "SeasonNumber", "EpisodeNumber"))
                 .filter(it -> it != null)
                 .collect(toList());
+    }
+
+    private static TvdbEpisode createEpisode(XQuery episode, String seasonTag, String episodeTag) {
+        Matcher ms = NUMBER_PATTERN.matcher(episode.text(seasonTag));
+        Matcher me = NUMBER_PATTERN.matcher(episode.text(episodeTag));
+
+        if (ms.matches() && me.matches()) {
+            TvdbEpisode te = new TvdbEpisode();
+            te.id = Long.parseLong(episode.text("id"));
+            te.title = episode.text("EpisodeName");
+            te.season = Integer.parseInt(ms.group(1));
+            te.episode = Integer.parseInt(me.group(1));
+            return te;
+        } else {
+            return null;
+        }
     }
 
 }
