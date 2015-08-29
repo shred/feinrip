@@ -99,7 +99,7 @@ public class IfoReader {
      */
     private void readVmgFile(File dvdDir, String vmgName) throws IOException {
         LOG.info("Reading VMG file %s", vmgName);
-        try (IfoRandomAccessFile vmg = new IfoRandomAccessFile(new File(dvdDir, vmgName))) {
+        try (IfoRandomAccessFile vmg = new IfoRandomAccessFile(dvdDir, vmgName)) {
             if (!"DVDVIDEO-VMG".equals(vmg.readFixedString(12))) {
                 throw new IfoException("No VMG file");
             }
@@ -170,12 +170,12 @@ public class IfoReader {
         try {
             try {
                 LOG.info("Reading VTS_%02d_0.IFO", vtsn);
-                readVtsFile(vtsnTitles, new File(dvdDir, String.format("VIDEO_TS/VTS_%02d_0.IFO", vtsn)));
+                readVtsFile(vtsnTitles, dvdDir, String.format("VIDEO_TS/VTS_%02d_0.IFO", vtsn));
             } catch (IfoException | EOFException ex) {
                 try {
                     LOG.warn("Failed to read VTS IFO file: %s", ex.getMessage());
                     LOG.info("Reading VTS_%02d_0.BUP", vtsn);
-                    readVtsFile(vtsnTitles, new File(dvdDir, String.format("VIDEO_TS/VTS_%02d_0.BUP", vtsn)));
+                    readVtsFile(vtsnTitles, dvdDir, String.format("VIDEO_TS/VTS_%02d_0.BUP", vtsn));
                 } catch (IfoException | EOFException ex2) {
                     LOG.warn("VTS file for vtsn %d is invalid: %s", vtsn, ex.getMessage());
                 }
@@ -192,11 +192,13 @@ public class IfoReader {
      * @param vtsnTitles
      *            {@link DvdTitle} belonging to this VTS file. When this method returns,
      *            the {@link DvdTitle} will contain detailed data.
+     * @param dvdDir
+     *            Mount directory of the DVD
      * @param vtsFile
      *            actual VTS file to be read
      */
-    private void readVtsFile(List<DvdTitle> vtsnTitles, File vtsFile) throws IOException {
-        try (IfoRandomAccessFile vts = new IfoRandomAccessFile(vtsFile)) {
+    private void readVtsFile(List<DvdTitle> vtsnTitles, File dvdDir, String vtsFile) throws IOException {
+        try (IfoRandomAccessFile vts = new IfoRandomAccessFile(dvdDir, vtsFile)) {
             if (!"DVDVIDEO-VTS".equals(vts.readFixedString(12))) {
                 throw new IfoException("No VTS file");
             }

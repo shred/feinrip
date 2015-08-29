@@ -41,11 +41,35 @@ public class IfoRandomAccessFile extends RandomAccessFile {
     /**
      * Creates a new {@link IfoRandomAccessFile}.
      *
+     * @param basedir
+     *            Mount directory of the DVD
      * @param file
-     *            {@link File} reference to the IFO or BUP file to be read
+     *            File name of the IFO or BUP file to be read. For this part, an
+     *            all-lowercase version of the file name is tried when the given file name
+     *            was not found.
      */
-    public IfoRandomAccessFile(File file) throws FileNotFoundException {
-        super(file, "r");
+    public IfoRandomAccessFile(File basedir, String file) throws FileNotFoundException {
+        super(findCaselessFilename(basedir, file), "r");
+    }
+
+    /**
+     * Creates a new {@link File} instance with the give basedir and file name. If no such
+     * file exists, a {@link File} instance with the file name all lowercased is returned
+     * instead.
+     *
+     * @param basedir
+     *            Base directory the file is expected in
+     * @param file
+     *            File name
+     * @return {@link File} instance, not guaranteed to point to an existing file
+     */
+    private static File findCaselessFilename(File basedir, String file) {
+        File given = new File(basedir, file);
+        if (given.exists()) {
+            return given;
+        }
+
+        return new File(basedir, file.toLowerCase());
     }
 
     /**
