@@ -119,10 +119,12 @@ public class ChapterUtils {
      */
     public static void writeChapters(Collection<Chapter> chapters, File out) throws IOException {
         try (PrintWriter pw = new PrintWriter(out)) {
-            chapters.forEach(chap -> {
-                pw.println(String.format("CHAPTER%02d=%s", chap.getNumber(), chap.getPosition()));
-                pw.println(String.format("CHAPTER%02dNAME=%s", chap.getNumber(), chap.getTitle()));
-            });
+            chapters.stream()
+                .filter(chap -> !chap.getTitle().trim().isEmpty())
+                .forEach(chap -> {
+                    pw.println(String.format("CHAPTER%02d=%s", chap.getNumber(), chap.getPosition()));
+                    pw.println(String.format("CHAPTER%02dNAME=%s", chap.getNumber(), chap.getTitle()));
+                });
         }
     }
 
