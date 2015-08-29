@@ -250,6 +250,7 @@ public class MkvEncoder {
         mergeCmd.redirectOutput(new PercentConsumer(meter, false));
         mergeCmd.redirectError(new LogConsumer(meter, true));
 
+        mergeCmd.failedIf(rc -> rc > 1);
         mergeCmd.execute();
     }
 

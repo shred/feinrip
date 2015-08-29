@@ -24,6 +24,7 @@ import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -44,6 +45,7 @@ public class Command {
     private int rc;
     private IOStream outConsumer = stream -> stream.count();
     private IOStream errConsumer = stream -> stream.count();
+    private Predicate<Integer> hasFailed = rc -> rc != 0;
 
     /**
      * Create a new command.
@@ -69,6 +71,11 @@ public class Command {
                 command.add(p.toString());
             }
         }
+        return this;
+    }
+
+    public Command failedIf(Predicate<Integer> predicate) {
+        this.hasFailed = predicate;
         return this;
     }
 
@@ -166,7 +173,7 @@ public class Command {
             throw new IOException("interrupted");
         }
 
-        if (rc != 0) {
+        if (hasFailed.test(rc)) {
             throw new IOException("command " + cmdName.getName()
                 + " failed, returning error code " + rc);
         }
