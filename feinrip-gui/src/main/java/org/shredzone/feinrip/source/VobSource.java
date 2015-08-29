@@ -28,6 +28,8 @@ import org.shredzone.feinrip.progress.ProgressMeter;
 import org.shredzone.feinrip.system.EitAnalyzer;
 import org.shredzone.feinrip.system.StreamUtils;
 import org.shredzone.feinrip.system.VobAnalyzer;
+import org.shredzone.feinrip.util.VobsubIndex;
+import org.shredzone.feinrip.util.VobsubIndex.Setting;
 
 /**
  * A {@link Source} for a single vob file.
@@ -160,7 +162,7 @@ public class VobSource extends AbstractSource {
                 paletteColors = palette.getPalette();
             }
 
-            StreamUtils.readSubtitleNoIfo(sub, sourceVob, vobsubFile, project.getSize(), paletteColors, meter);
+            StreamUtils.readSubtitleNoIfo(sub, sourceVob, vobsubFile, project.getSize(), meter);
 
             File idxFile = new File(vobsubFile.getAbsolutePath() + ".idx");
             File subFile = new File(vobsubFile.getAbsolutePath() + ".sub");
@@ -168,6 +170,11 @@ public class VobSource extends AbstractSource {
             if (subFile.exists() && subFile.length() > 0) { // ignore empty sub files
                 return idxFile;
             }
+
+            VobsubIndex vsi = new VobsubIndex();
+            vsi.read(idxFile);
+            vsi.set(Setting.PALETTE, paletteColors.toRgbString());
+            vsi.write(idxFile);
 
             return null;
         } finally {

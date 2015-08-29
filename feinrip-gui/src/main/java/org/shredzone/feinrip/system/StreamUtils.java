@@ -16,18 +16,13 @@
 package org.shredzone.feinrip.system;
 
 import java.awt.Dimension;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.shredzone.feinrip.model.Audio;
-import org.shredzone.feinrip.model.Palette;
 import org.shredzone.feinrip.model.StreamType;
 import org.shredzone.feinrip.model.Subtitle;
 import org.shredzone.feinrip.progress.FFmpegConsumer;
@@ -161,13 +156,10 @@ public class StreamUtils {
      *            Sub file to write to
      * @param dim
      *            Dimension of the video, to be used for subtitles. Required.
-     * @param palette
-     *            Palette to be used for subtitle rendering. {@code null} to use a default
-     *            palette. It will look quite ugly in either way.
      * @param meter
      *            {@link ProgressMeter} to update while streaming
      */
-    public static void readSubtitleNoIfo(Subtitle sub, File vobFile, File vobsubFile, Dimension dim, Palette palette, ProgressMeter meter)
+    public static void readSubtitleNoIfo(Subtitle sub, File vobFile, File vobsubFile, Dimension dim, ProgressMeter meter)
                     throws IOException {
         int streamNr = Integer.parseInt(sub.getStreamId().substring(2), 16) - 32;
 
@@ -185,28 +177,6 @@ public class StreamUtils {
         mencoderCmd.redirectError(new LogConsumer(meter, true));
 
         mencoderCmd.execute();
-
-        if (palette != null) {
-            String paletteStr = palette.getRgbAsList().stream()
-                    .map(it -> String.format("%06X", it))
-                    .collect(Collectors.joining(", "));
-
-            File vobsubIdx = new File(vobsubFile.getAbsolutePath() + ".idx");
-
-            // Add the palette to the idx file
-            StringBuilder sb = new StringBuilder();
-            try (BufferedReader r = new BufferedReader(new FileReader(vobsubIdx))) {
-                r.lines().forEachOrdered(line -> {
-                    sb.append(line).append('\n');
-                    if (line.startsWith("size:")) {
-                        sb.append("palette: ").append(paletteStr).append('\n');
-                    }
-                });
-            }
-            try (FileWriter w = new FileWriter(vobsubIdx)) {
-                w.write(sb.toString());
-            }
-        }
     }
 
     /**

@@ -15,11 +15,8 @@
  */
 package org.shredzone.feinrip.source;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +28,6 @@ import org.shredzone.feinrip.model.Audio;
 import org.shredzone.feinrip.model.Chapter;
 import org.shredzone.feinrip.model.Configuration;
 import org.shredzone.feinrip.model.MountPoint;
-import org.shredzone.feinrip.model.Palette;
 import org.shredzone.feinrip.model.StreamType;
 import org.shredzone.feinrip.model.Subtitle;
 import org.shredzone.feinrip.model.Track;
@@ -40,6 +36,8 @@ import org.shredzone.feinrip.system.EitAnalyzer;
 import org.shredzone.feinrip.system.StreamUtils;
 import org.shredzone.feinrip.system.TrackAnalyzer;
 import org.shredzone.feinrip.util.DvdAnalyzer;
+import org.shredzone.feinrip.util.VobsubIndex;
+import org.shredzone.feinrip.util.VobsubIndex.Setting;
 
 /**
  * A {@link Source} for physical DVDs.
@@ -315,42 +313,15 @@ public class DvdSource extends AbstractSource implements TrackableSource {
             }
 
             // Exchange palette, mencoder seems to have some difficulties...
-            replacePalette(idxFile, dvd.getPalette(track.getTrack()));
+            VobsubIndex vsi = new VobsubIndex();
+            vsi.read(idxFile);
+            vsi.set(Setting.PALETTE, dvd.getPalette(track.getTrack()).toRgbString());
+            vsi.write(idxFile);
 
             return idxFile;
         } finally {
             vobsubFile.delete();
         }
-    }
-
-    /**
-     * Replaces the palette of a vobsub idx file.
-     *
-     * @param idx
-     *            idx file to replace the palette of
-     * @param palette
-     *            {@link Palette} to be used in the file instead
-     */
-    private void replacePalette(File idx, Palette palette) throws IOException {
-        File tmpFile = File.createTempFile("feinrip-", "-sub-tmp");
-        if (!idx.renameTo(tmpFile)) {
-            throw new IOException("Could not rename " + idx.getName());
-        }
-
-        try (BufferedReader in = new BufferedReader(new FileReader(tmpFile));
-             PrintWriter out = new PrintWriter(idx)) {
-            String line;
-            while ((line = in.readLine()) != null) {
-                if (line.startsWith("palette: ")) {
-                    out.print("palette: ");
-                    out.println(palette.toRgbString());
-                } else {
-                    out.println(line);
-                }
-            }
-        }
-
-        tmpFile.delete();
     }
 
     @Override
