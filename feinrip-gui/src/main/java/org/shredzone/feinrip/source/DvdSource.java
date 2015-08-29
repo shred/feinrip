@@ -56,6 +56,7 @@ public class DvdSource extends AbstractSource implements TrackableSource {
     private DvdAnalyzer dvd;
     private List<Track> tracks;
     private Track track;
+    private boolean vobCorrupted = false;
 
     /**
      * Sets the {@link MountPoint} to be used.
@@ -180,6 +181,11 @@ public class DvdSource extends AbstractSource implements TrackableSource {
     }
 
     @Override
+    public boolean isVobFileCorrupted() {
+        return vobCorrupted;
+    }
+
+    @Override
     public void setupProject() {
         project.setDefAudio(null);
         project.setDefSub(null);
@@ -283,7 +289,7 @@ public class DvdSource extends AbstractSource implements TrackableSource {
     @Override
     public File createVobFile(ProgressMeter meter) throws IOException {
         File vobFile = File.createTempFile("feinrip-", "-video.vob");
-        StreamUtils.readStream(getDevice(), getSelectedTrackNr(), vobFile, getStreamType(), meter);
+        vobCorrupted = StreamUtils.readStream(getDevice(), getSelectedTrackNr(), vobFile, getStreamType(), meter);
         return vobFile;
     }
 

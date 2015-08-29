@@ -15,6 +15,7 @@
  */
 package org.shredzone.feinrip.gui.action;
 
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
@@ -114,6 +115,13 @@ public class StartAction extends AbstractAsyncAction implements PropertyChangeLi
         progress.setFrame(null);
         updateEnabled();
         project.setProcessing(false);
+
+        if (project.getSource().isVobFileCorrupted()) {
+            JOptionPane.showMessageDialog((Component) e.getSource(),
+                            B.getString("action.start.corrupted"),
+                            B.getString("action.start.msgtitle"),
+                            JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**

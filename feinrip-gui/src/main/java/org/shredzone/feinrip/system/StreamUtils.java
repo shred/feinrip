@@ -28,6 +28,7 @@ import org.shredzone.feinrip.model.Subtitle;
 import org.shredzone.feinrip.progress.FFmpegConsumer;
 import org.shredzone.feinrip.progress.LogConsumer;
 import org.shredzone.feinrip.progress.PercentConsumer;
+import org.shredzone.feinrip.progress.PredicateLogConsumer;
 import org.shredzone.feinrip.progress.ProgressMeter;
 import org.shredzone.feinrip.util.Command;
 
@@ -60,13 +61,17 @@ public class StreamUtils {
      *            {@link StreamType} to be used for streaming
      * @param meter
      *            {@link ProgressMeter} to update while streaming
+     * @return {@code true} if there was an I/O error reported while reading
      */
-    public static void readStream(File device, int track, File out, StreamType type, ProgressMeter meter)
+    public static boolean readStream(File device, int track, File out, StreamType type, ProgressMeter meter)
                     throws IOException {
         if (type == StreamType.TCCAT) {
-            readStreamTccat(device, track, out, meter);
-            return;
+            return readStreamTccat(device, track, out, meter);
         }
+
+        PredicateLogConsumer logConsumer = new PredicateLogConsumer(meter, true,
+            line -> line.contains("stream read error!")
+        );
 
         Command mplayerCmd = new Command(MPLAYER);
         mplayerCmd.param("-dvd-device", device);
@@ -76,9 +81,11 @@ public class StreamUtils {
         mplayerCmd.param("-dumpfile", out);
 
         mplayerCmd.redirectOutput(new PercentConsumer(meter, false));
-        mplayerCmd.redirectError(new LogConsumer(meter, true));
+        mplayerCmd.redirectError(logConsumer);
 
         mplayerCmd.execute();
+
+        return logConsumer.hasMatched();
     }
 
     /**
@@ -92,17 +99,24 @@ public class StreamUtils {
      *            File to write the stream to
      * @param meter
      *            {@link ProgressMeter} to update while streaming
+     * @return {@code true} if there was an I/O error reported while reading
      */
-    private static void readStreamTccat(File device, int track, File out, ProgressMeter meter)
+    private static boolean readStreamTccat(File device, int track, File out, ProgressMeter meter)
                     throws IOException {
+        PredicateLogConsumer logConsumer = new PredicateLogConsumer(meter, true,
+            Pattern.compile(".*?critical.*?Read.failed.for.\\d+.blocks.*").asPredicate()
+        );
+
         Command tccatCmd = new Command(TCCAT);
         tccatCmd.param("-i", device);
         tccatCmd.param("-T", track + ",-1");
 
         tccatCmd.redirectOutput(out);
-        tccatCmd.redirectError(new LogConsumer(meter, true));
+        tccatCmd.redirectError(logConsumer);
 
         tccatCmd.execute();
+
+        return logConsumer.hasMatched();
     }
 
     /**

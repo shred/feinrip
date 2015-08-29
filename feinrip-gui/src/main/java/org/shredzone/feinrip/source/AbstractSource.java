@@ -89,4 +89,9 @@ public abstract class AbstractSource implements Source {
         return result;
     }
 
+    @Override
+    public boolean isVobFileCorrupted() {
+        return false;
+    }
+
 }
