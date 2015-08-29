@@ -30,6 +30,23 @@ public class ErrorDialog {
     private static final ResourceBundle B = ResourceBundle.getBundle("message");
 
     /**
+     * Show an error.
+     *
+     * @param title
+     *            Resource name of the error title
+     * @param message
+     *            Resource name of the error content
+     * @param args
+     *            {@link MessageFormat} arguments for the error content
+     */
+    public static void showError(String title, String message, Object... args) {
+        JOptionPane.showMessageDialog(null,
+                        MessageFormat.format(B.getString(message), args),
+                        B.getString(title),
+                        JOptionPane.ERROR_MESSAGE);
+    }
+
+    /**
      * Show the exception.
      *
      * @param ex

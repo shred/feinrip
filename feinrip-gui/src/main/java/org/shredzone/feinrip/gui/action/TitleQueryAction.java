@@ -37,7 +37,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
@@ -46,6 +45,7 @@ import javax.swing.event.ListSelectionListener;
 
 import org.shredzone.feinrip.database.OfdbService;
 import org.shredzone.feinrip.database.OmdbService;
+import org.shredzone.feinrip.gui.ErrorDialog;
 import org.shredzone.feinrip.gui.model.SimpleArrayListModel;
 import org.shredzone.feinrip.model.Project;
 
@@ -151,10 +151,7 @@ public class TitleQueryAction extends AbstractAsyncAction implements PropertyCha
         final Component src = (Component) e.getSource();
 
         if (options.isEmpty()) {
-            JOptionPane.showMessageDialog(src,
-                            B.getString("action.title.nothing"),
-                            B.getString("action.title.msgtitle"),
-                            JOptionPane.ERROR_MESSAGE);
+            ErrorDialog.showError("action.title.msgtitle", "action.title.nothing");
             return;
         }
 

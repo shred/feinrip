@@ -30,7 +30,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
@@ -40,6 +39,7 @@ import javax.swing.event.ListSelectionListener;
 import org.shredzone.feinrip.database.TvdbService;
 import org.shredzone.feinrip.database.TvdbService.TvdbEpisode;
 import org.shredzone.feinrip.database.TvdbService.TvdbSeries;
+import org.shredzone.feinrip.gui.ErrorDialog;
 import org.shredzone.feinrip.gui.model.SimpleArrayListModel;
 import org.shredzone.feinrip.model.Project;
 
@@ -96,10 +96,7 @@ public class TvdbQueryAction extends AbstractAsyncAction implements PropertyChan
         final Component src = (Component) e.getSource();
 
         if (series.isEmpty()) {
-            JOptionPane.showMessageDialog(src,
-                            B.getString("action.tvdb.nothing"),
-                            B.getString("action.tvdb.msgtitle"),
-                            JOptionPane.ERROR_MESSAGE);
+            ErrorDialog.showError("action.tvdb.msgtitle", "action.tvdb.nothing");
             project.setEpisodes(null);
             project.setEpisode(null);
             return;
