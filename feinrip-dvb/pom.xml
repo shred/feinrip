@@ -36,4 +36,13 @@
         </license>
     </licenses>
 
+    <dependencies>
+        <dependency>
+            <groupId>net.sf.jmatchparser</groupId>
+            <artifactId>jMatchParser-charset</artifactId>
+            <version>0.1</version>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
+
 </project>
