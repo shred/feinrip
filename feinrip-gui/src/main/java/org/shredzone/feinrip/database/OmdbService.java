@@ -19,8 +19,8 @@ import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -36,6 +36,7 @@ import org.xml.sax.InputSource;
 public class OmdbService {
 
     private static final String SITE = "http://www.omdbapi.com";
+    private static final int TIMEOUT = 10000;
 
     /**
      * Searches for titles matching a query.
@@ -47,7 +48,9 @@ public class OmdbService {
     public static List<String> searchTitles(String query) throws IOException {
         String url = SITE + "/?r=XML&s=" + URLEncoder.encode(query, "utf-8");
 
-        URLConnection conn = new URL(url).openConnection();
+        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+        conn.setConnectTimeout(TIMEOUT);
+        conn.setReadTimeout(TIMEOUT);
 
         try (InputStream in = conn.getInputStream()) {
             XQuery doc = XQuery.parse(new InputSource(in));

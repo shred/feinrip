@@ -19,6 +19,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -41,6 +42,7 @@ public class TvdbService {
     private static final String SITE = "http://www.thetvdb.com/api";
     private static final Pattern NAME_AND_YEAR_PATTERN = Pattern.compile("(.*?)\\s+\\(\\d+\\)");
     private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d+).*");
+    private static final int TIMEOUT = 10000;
 
     // It is permitted to publish the API key in the source code, see here:
     //   http://forums.thetvdb.com/viewtopic.php?f=17&t=8227
@@ -94,7 +96,9 @@ public class TvdbService {
         }
 
         String url = SITE + "/GetSeries.php?language=all&seriesname=" + URLEncoder.encode(q, "utf-8");
-        URLConnection conn = new URL(url).openConnection();
+        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+        conn.setConnectTimeout(TIMEOUT);
+        conn.setReadTimeout(TIMEOUT);
 
         try (InputStream in = conn.getInputStream()) {
             XQuery doc = XQuery.parse(new InputSource(in));
