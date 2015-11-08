@@ -27,6 +27,7 @@ import java.util.prefs.Preferences;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
+import org.shredzone.feinrip.database.ImdbDatabase;
 import org.shredzone.feinrip.gui.FeinripPane;
 
 /**
@@ -42,6 +43,8 @@ public class Feinrip extends JFrame {
 
     public Feinrip() {
         super(B.getString("title"));
+
+        ImdbDatabase.global(); // Initialize database connection
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {

@@ -43,6 +43,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.shredzone.feinrip.database.ImdbService;
 import org.shredzone.feinrip.database.OfdbService;
 import org.shredzone.feinrip.database.OmdbService;
 import org.shredzone.feinrip.gui.ErrorDialog;
@@ -107,6 +108,7 @@ public class TitleQueryAction extends AbstractAsyncAction implements PropertyCha
     private List<String> searchTitles(String title) throws IOException {
         ExecutorService exs = Executors.newFixedThreadPool(3);
 
+        Future<List<String>> imdbFuture = exs.submit(() -> ImdbService.searchTitles(title));
         Future<List<String>> omdbFuture = exs.submit(() -> OmdbService.searchTitles(title));
         Future<List<String>> ofdbFuture = exs.submit(() -> OfdbService.searchTitles(title));
 
@@ -114,10 +116,18 @@ public class TitleQueryAction extends AbstractAsyncAction implements PropertyCha
         List<String> result = new ArrayList<>();
 
         try {
+            Iterator<String> imdbIt = imdbFuture.get().iterator();
             Iterator<String> omdbIt = omdbFuture.get().iterator();
             Iterator<String> ofdbIt = ofdbFuture.get().iterator();
 
-            while (omdbIt.hasNext() || ofdbIt.hasNext()) {
+            while (imdbIt.hasNext() || omdbIt.hasNext() || ofdbIt.hasNext()) {
+                if (imdbIt.hasNext()) {
+                    String t = imdbIt.next();
+                    if (seen.add(t)) {
+                        result.add(t);
+                    }
+                }
+
                 if (omdbIt.hasNext()) {
                     String t = omdbIt.next();
                     if (seen.add(t)) {

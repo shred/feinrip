@@ -29,6 +29,7 @@ public class Configuration {
     private static final String MUXERHOLD_KEY = "muxerHold";
     private static final String DVD_STREAMTYPE_KEY = "dvdStreamType";
     private static final String TEMP_DIR = "tempDir";
+    private static final String IMDB_URL = "imdbUrl";
 
     /**
      * Returns the global {@link Configuration} instance.
@@ -131,6 +132,24 @@ public class Configuration {
         // Use /var/tmp as default because /tmp is a ram FS on some Linuxes, which may
         // be too small to hold entire movies.
         return prefs.get(TEMP_DIR, "/var/tmp");
+    }
+
+    /**
+     * Sets the URL of the IMDb database file server to be used.
+     */
+    public void setImdbUrl(String url) {
+        if (url != null) {
+            prefs.put(IMDB_URL, url);
+        } else {
+            prefs.remove(IMDB_URL);
+        }
+    }
+
+    /**
+     * Gets the URL of the IMDb database file server to be used.
+     */
+    public String getImdbUrl() {
+        return prefs.get(IMDB_URL, "ftp://ftp.fu-berlin.de/pub/misc/movies/database/");
     }
 
 }

@@ -16,14 +16,17 @@
 package org.shredzone.feinrip.gui.pane;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -35,13 +38,16 @@ import javax.swing.event.ListSelectionListener;
 
 import org.shredzone.feinrip.database.TvdbService.TvdbEpisode;
 import org.shredzone.feinrip.gui.BorderAndFlowPanel;
+import org.shredzone.feinrip.gui.ConfigurablePane;
 import org.shredzone.feinrip.gui.JEpisodeList;
 import org.shredzone.feinrip.gui.JLabelGroup;
+import org.shredzone.feinrip.gui.action.ImdbSyncAction;
 import org.shredzone.feinrip.gui.action.NextEpisodeAction;
 import org.shredzone.feinrip.gui.action.ProposeTitleAction;
 import org.shredzone.feinrip.gui.action.TitleQueryAction;
 import org.shredzone.feinrip.gui.action.TvdbQueryAction;
 import org.shredzone.feinrip.gui.model.EpisodeListModel;
+import org.shredzone.feinrip.model.Configuration;
 import org.shredzone.feinrip.model.Project;
 import org.shredzone.feinrip.source.Source;
 
@@ -51,13 +57,17 @@ import org.shredzone.feinrip.source.Source;
  * @author Richard "Shred" Körber
  */
 @Pane(name = "title", title = "pane.title", icon = "title.png")
-public class TitlePane extends PowerPane implements DocumentListener, ListSelectionListener {
+public class TitlePane extends PowerPane implements ConfigurablePane, DocumentListener,
+        ListSelectionListener {
     private static final long serialVersionUID = 5465622345023874309L;
 
     private static final ResourceBundle B = ResourceBundle.getBundle("message");
 
+    private Configuration config = Configuration.global();
+
     private JTextField jtfTitle;
     private JEpisodeList jlEpisodes;
+    private JTextField jtfImdbUrl;
 
     public TitlePane(Project project) {
         super(project);
@@ -111,6 +121,33 @@ public class TitlePane extends PowerPane implements DocumentListener, ListSelect
         add(Box.createVerticalStrut(3));
 
         lg.rearrange();
+    }
+
+    @Override
+    public Component getConfigurationPane() {
+        JPanel jpConfig = new JPanel();
+        jpConfig.setLayout(new BoxLayout(jpConfig,  BoxLayout.Y_AXIS));
+        jpConfig.setBorder(BorderFactory.createTitledBorder(B.getString("pane.title.settings")));
+        {
+            JLabelGroup lg = null;
+
+            JPanel jpImdbUrl = new BorderAndFlowPanel();
+            {
+                jtfImdbUrl = new JTextField(config.getImdbUrl());
+                jtfImdbUrl.setToolTipText(B.getString("pane.title.imdburl.tt"));
+                jpImdbUrl.add(jtfImdbUrl, BorderLayout.CENTER);
+
+                JButton jbImdbSync = new JButton(new ImdbSyncAction());
+                jpImdbUrl.add(jbImdbSync, BorderLayout.LINE_END);
+            }
+            jpConfig.add(lg = new JLabelGroup(jpImdbUrl, B.getString("pane.title.imdb"), lg));
+            jpConfig.add(lg = new JLabelGroup(new JLabel(B.getString("pane.title.imdb.license")), "", lg));
+
+            lg.rearrange();
+        }
+
+        JLabelGroup.setMinimumHeight(jpConfig);
+        return jpConfig;
     }
 
     private void proposeTitleIfEmpty() {
