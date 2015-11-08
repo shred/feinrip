@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -119,6 +120,7 @@ public class ChapterPane extends PowerPane {
 
     private JPanel buildChapterPane(List<Chapter> chapters) {
         final JPanel jpResult = new JPanel(new GridBagLayout());
+        jpResult.setBorder(BorderFactory.createEmptyBorder(5, 2, 5, 2));
         GridBagConstraints c1 = new GridBagConstraints(0, 0, 1, 1, 0.0d, 0.0d, GridBagConstraints.LINE_END, GridBagConstraints.HORIZONTAL, new Insets(0, 2, 0, 5), 0, 0);
         GridBagConstraints c2 = new GridBagConstraints(1, 0, 1, 1, 1.0d, 0.0d, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0);
         GridBagConstraints c3 = new GridBagConstraints(2, 0, 1, 1, 0.0d, 0.0d, GridBagConstraints.LINE_START, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 0, 2), 0, 0);
