@@ -32,10 +32,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import org.shredzone.feinrip.gui.BorderAndFlowPanel;
+import org.shredzone.feinrip.gui.DocumentListenerAdapter;
 import org.shredzone.feinrip.gui.JLabelGroup;
 import org.shredzone.feinrip.gui.SimpleFileFilter;
 import org.shredzone.feinrip.gui.action.AbstractSyncAction;
@@ -48,7 +47,7 @@ import org.shredzone.feinrip.model.TargetTemplate;
  * @author Richard "Shred" Körber
  */
 @Pane(name = "target", title = "pane.target", icon = "target.png")
-public class TargetPane extends PowerPane implements DocumentListener {
+public class TargetPane extends PowerPane {
     private static final long serialVersionUID = -7660584324877119554L;
 
     private static final ResourceBundle B = ResourceBundle.getBundle("message");
@@ -82,7 +81,8 @@ public class TargetPane extends PowerPane implements DocumentListener {
             jtfFile = new JTextField();
             jtfFile.setToolTipText(B.getString("pane.target.keys"));
             jtfFile.addActionListener(this::onFileAction);
-            jtfFile.getDocument().addDocumentListener(this);
+            jtfFile.getDocument().addDocumentListener(
+                            new DocumentListenerAdapter(e -> updateTargetFile(jtfFile.getText())));
             jpFile.add(jtfFile, BorderLayout.CENTER);
 
             jbSelect = new JButton(new FileSelectAction());
@@ -133,21 +133,6 @@ public class TargetPane extends PowerPane implements DocumentListener {
     }
 
     private void onFileAction(ActionEvent e) {
-        updateTargetFile(jtfFile.getText());
-    }
-
-    @Override
-    public void changedUpdate(DocumentEvent e) {
-        updateTargetFile(jtfFile.getText());
-    }
-
-    @Override
-    public void insertUpdate(DocumentEvent e) {
-        updateTargetFile(jtfFile.getText());
-    }
-
-    @Override
-    public void removeUpdate(DocumentEvent e) {
         updateTargetFile(jtfFile.getText());
     }
 

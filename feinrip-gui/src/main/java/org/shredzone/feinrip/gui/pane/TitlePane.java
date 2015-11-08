@@ -26,19 +26,20 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.shredzone.feinrip.database.TvdbService.TvdbEpisode;
 import org.shredzone.feinrip.gui.BorderAndFlowPanel;
 import org.shredzone.feinrip.gui.ConfigurablePane;
+import org.shredzone.feinrip.gui.DocumentListenerAdapter;
 import org.shredzone.feinrip.gui.JEpisodeList;
 import org.shredzone.feinrip.gui.JLabelGroup;
 import org.shredzone.feinrip.gui.action.ImdbSyncAction;
@@ -57,8 +58,7 @@ import org.shredzone.feinrip.source.Source;
  * @author Richard "Shred" Körber
  */
 @Pane(name = "title", title = "pane.title", icon = "title.png")
-public class TitlePane extends PowerPane implements ConfigurablePane, DocumentListener,
-        ListSelectionListener {
+public class TitlePane extends PowerPane implements ConfigurablePane, ListSelectionListener {
     private static final long serialVersionUID = 5465622345023874309L;
 
     private static final ResourceBundle B = ResourceBundle.getBundle("message");
@@ -68,6 +68,9 @@ public class TitlePane extends PowerPane implements ConfigurablePane, DocumentLi
     private JTextField jtfTitle;
     private JEpisodeList jlEpisodes;
     private JTextField jtfImdbUrl;
+    private JCheckBox jcbImdbEnabled;
+    private JCheckBox jcbOfdbEnabled;
+    private JCheckBox jcbOmdbEnabled;
 
     public TitlePane(Project project) {
         super(project);
@@ -84,7 +87,8 @@ public class TitlePane extends PowerPane implements ConfigurablePane, DocumentLi
         {
             jtfTitle = new JTextField();
             jtfTitle.addActionListener(this::onTitleAction);
-            jtfTitle.getDocument().addDocumentListener(this);
+            jtfTitle.getDocument().addDocumentListener(
+                            new DocumentListenerAdapter(e -> project.setTitle(jtfTitle.getText())));
             jpTitle.add(jtfTitle, BorderLayout.CENTER);
 
             JButton jbPropose = new JButton(new ProposeTitleAction(project));
@@ -135,6 +139,8 @@ public class TitlePane extends PowerPane implements ConfigurablePane, DocumentLi
             {
                 jtfImdbUrl = new JTextField(config.getImdbUrl());
                 jtfImdbUrl.setToolTipText(B.getString("pane.title.imdburl.tt"));
+                jtfImdbUrl.getDocument().addDocumentListener(
+                                new DocumentListenerAdapter(e -> config.setImdbUrl(jtfImdbUrl.getText())));
                 jpImdbUrl.add(jtfImdbUrl, BorderLayout.CENTER);
 
                 JButton jbImdbSync = new JButton(new ImdbSyncAction());
@@ -142,6 +148,24 @@ public class TitlePane extends PowerPane implements ConfigurablePane, DocumentLi
             }
             jpConfig.add(lg = new JLabelGroup(jpImdbUrl, B.getString("pane.title.imdb"), lg));
             jpConfig.add(lg = new JLabelGroup(new JLabel(B.getString("pane.title.imdb.license")), "", lg));
+
+            jpConfig.add(new JSeparator());
+
+            jcbImdbEnabled = new JCheckBox(B.getString("pane.title.enableimdb"));
+            jcbImdbEnabled.setSelected(config.isImdbEnabled());
+            jcbImdbEnabled.addChangeListener(e -> config.setImdbEnabled(jcbImdbEnabled.isSelected()));
+            jpConfig.add(lg = new JLabelGroup(jcbImdbEnabled, "", lg));
+
+            jcbOfdbEnabled = new JCheckBox(B.getString("pane.title.enableofdb"));
+            jcbOfdbEnabled.setSelected(config.isOfdbEnabled());
+            jcbOfdbEnabled.addChangeListener(e -> config.setOfdbEnabled(jcbOfdbEnabled.isSelected()));
+            jpConfig.add(lg = new JLabelGroup(jcbOfdbEnabled, "", lg));
+
+            jcbOmdbEnabled = new JCheckBox(B.getString("pane.title.enableomdb"));
+            jcbOmdbEnabled.setSelected(config.isOmdbEnabled());
+            jcbOmdbEnabled.addChangeListener(e -> config.setOmdbEnabled(jcbOmdbEnabled.isSelected()));
+            jpConfig.add(lg = new JLabelGroup(jcbOmdbEnabled, "", lg));
+
 
             lg.rearrange();
         }
@@ -226,21 +250,6 @@ public class TitlePane extends PowerPane implements ConfigurablePane, DocumentLi
         if (evt.getSource() instanceof Source) {
             proposeTitleIfEmpty();
         }
-    }
-
-    @Override
-    public void changedUpdate(DocumentEvent e) {
-        project.setTitle(jtfTitle.getText());
-    }
-
-    @Override
-    public void insertUpdate(DocumentEvent e) {
-        project.setTitle(jtfTitle.getText());
-    }
-
-    @Override
-    public void removeUpdate(DocumentEvent e) {
-        project.setTitle(jtfTitle.getText());
     }
 
     @Override

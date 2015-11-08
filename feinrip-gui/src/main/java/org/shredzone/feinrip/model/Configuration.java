@@ -30,6 +30,9 @@ public class Configuration {
     private static final String DVD_STREAMTYPE_KEY = "dvdStreamType";
     private static final String TEMP_DIR = "tempDir";
     private static final String IMDB_URL = "imdbUrl";
+    private static final String IMDB_ENABLE = "imdbEnable";
+    private static final String OMDB_ENABLE = "omdbEnable";
+    private static final String OFDB_ENABLE = "ofdbEnable";
 
     /**
      * Returns the global {@link Configuration} instance.
@@ -150,6 +153,48 @@ public class Configuration {
      */
     public String getImdbUrl() {
         return prefs.get(IMDB_URL, "ftp://ftp.fu-berlin.de/pub/misc/movies/database/");
+    }
+
+    /**
+     * Sets if the IMDb is to be searched for titles.
+     */
+    public void setImdbEnabled(boolean enabled) {
+        prefs.putBoolean(IMDB_ENABLE, enabled);
+    }
+
+    /**
+     * Checks if the IMDb is to be searched for titles.
+     */
+    public boolean isImdbEnabled() {
+        return prefs.getBoolean(IMDB_ENABLE, true);
+    }
+
+    /**
+     * Sets if the OMDB is to be searched for titles.
+     */
+    public void setOmdbEnabled(boolean enabled) {
+        prefs.putBoolean(OMDB_ENABLE, enabled);
+    }
+
+    /**
+     * Checks if the OMDB is to be searched for titles.
+     */
+    public boolean isOmdbEnabled() {
+        return prefs.getBoolean(OMDB_ENABLE, true);
+    }
+
+    /**
+     * Sets if the OFDb is to be searched for titles.
+     */
+    public void setOfdbEnabled(boolean enabled) {
+        prefs.putBoolean(OFDB_ENABLE, enabled);
+    }
+
+    /**
+     * Checks if the OFDb is to be searched for titles.
+     */
+    public boolean isOfdbEnabled() {
+        return prefs.getBoolean(OFDB_ENABLE, true);
     }
 
 }

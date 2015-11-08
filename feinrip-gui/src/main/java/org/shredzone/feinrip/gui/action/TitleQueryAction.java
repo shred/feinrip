@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,6 +49,7 @@ import org.shredzone.feinrip.database.OfdbService;
 import org.shredzone.feinrip.database.OmdbService;
 import org.shredzone.feinrip.gui.ErrorDialog;
 import org.shredzone.feinrip.gui.model.SimpleArrayListModel;
+import org.shredzone.feinrip.model.Configuration;
 import org.shredzone.feinrip.model.Project;
 
 /**
@@ -64,6 +66,8 @@ public class TitleQueryAction extends AbstractAsyncAction implements PropertyCha
 
     private static final ResourceBundle B = ResourceBundle.getBundle("message");
     private static final Icon titleIcon = new ImageIcon(OpenChaptersAction.class.getResource("/org/shredzone/feinrip/icon/find.png"));
+
+    private final Configuration config = Configuration.global();
 
     private final Project project;
     private List<String> options;
@@ -99,6 +103,24 @@ public class TitleQueryAction extends AbstractAsyncAction implements PropertyCha
     }
 
     /**
+     * Helper that only invokes the service if enabled is {@code true}.
+     *
+     * @param enabled
+     *            Enabled flag
+     * @param service
+     *            Service to be invoked
+     * @return Either service if enabled, or a callable returning an empty list if
+     *         disabled.
+     */
+    private static Callable<List<String>> ifEnabled(boolean enabled, Callable<List<String>> service) {
+        if (enabled) {
+            return service;
+        } else {
+            return Collections::emptyList;
+        }
+    }
+
+    /**
      * Queries multiple databases for titles and mixes the result into one large list.
      *
      * @param title
@@ -108,9 +130,12 @@ public class TitleQueryAction extends AbstractAsyncAction implements PropertyCha
     private List<String> searchTitles(String title) throws IOException {
         ExecutorService exs = Executors.newFixedThreadPool(3);
 
-        Future<List<String>> imdbFuture = exs.submit(() -> ImdbService.searchTitles(title));
-        Future<List<String>> omdbFuture = exs.submit(() -> OmdbService.searchTitles(title));
-        Future<List<String>> ofdbFuture = exs.submit(() -> OfdbService.searchTitles(title));
+        Future<List<String>> imdbFuture = exs.submit(ifEnabled(
+                        config.isImdbEnabled(), () -> ImdbService.searchTitles(title)));
+        Future<List<String>> omdbFuture = exs.submit(ifEnabled(
+                        config.isOmdbEnabled(), () -> OmdbService.searchTitles(title)));
+        Future<List<String>> ofdbFuture = exs.submit(ifEnabled(
+                        config.isOfdbEnabled(), () -> OfdbService.searchTitles(title)));
 
         Set<String> seen = new TreeSet<>();
         List<String> result = new ArrayList<>();
