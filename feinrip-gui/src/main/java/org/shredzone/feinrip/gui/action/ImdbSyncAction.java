@@ -41,12 +41,17 @@ public class ImdbSyncAction extends AbstractAsyncAction {
     private final ImdbDatabase database = ImdbDatabase.global();
 
     public ImdbSyncAction() {
-        super(B.getString("action.title.imdbsync"), null);
-        setToolTipText(B.getString("action.title.imdbsync.tt"));
+        super(B.getString("action.imdbsync"), null);
+        setToolTipText(B.getString("action.imdbsync.tt"));
     }
 
     @Override
     public void onAction(ActionEvent e) {
+        if (database.isReadOnly()) {
+            ErrorDialog.showError("action.imdbsync.blocked.title", "action.imdbsync.blocked.message");
+            return;
+        }
+
         try {
             URL url = new URL(config.getImdbUrl() + "/aka-titles.list.gz");
 

@@ -48,6 +48,7 @@ public class ImdbDatabase implements AutoCloseable {
     private static ImdbDatabase instance;
 
     private Connection connection;
+    private boolean ro;
 
     /**
      * Returns the singleton instance of the database.
@@ -58,10 +59,31 @@ public class ImdbDatabase implements AutoCloseable {
         if (instance == null) {
             instance = new ImdbDatabase();
             new Thread(() -> {
+                IOException exception = null;
+
+                // First try to open in read/write mode...
                 try {
-                    instance.connect();
+                    instance.connect(false);
                 } catch (IOException ex) {
-                    ErrorDialog.showException(ex);
+                    exception = ex;
+                }
+
+                // If could not be locked, try in read only mode...
+                if (exception != null
+                        && exception.getCause() != null
+                        && exception.getCause() instanceof SQLException
+                        && exception.getCause().getMessage().startsWith("Database lock acquisition failure")) {
+                    try {
+                        exception = null;
+                        instance.connect(true);
+                    } catch (IOException ex) {
+                        exception = ex;
+                    }
+                }
+
+                // It failed for other reasons...
+                if (exception != null) {
+                    ErrorDialog.showException(exception);
                 }
             }).start();
         }
@@ -70,16 +92,31 @@ public class ImdbDatabase implements AutoCloseable {
 
     /**
      * Connects to the database.
+     *
+     * @param readonly
+     *            {@code true} if the database is to be opened as read-only. Useful for
+     *            shared access to the database.
      */
-    protected void connect() throws IOException {
+    protected void connect(boolean readonly) throws IOException {
         try {
             System.setProperty("hsqldb.log_data", "false");
+
             Path database = FileSystems.getDefault().getPath(System.getProperty("user.home"), ".local", "share", "feinrip", "movie.db");
             Files.createDirectories(database.getParent());
-            connection = DriverManager.getConnection("jdbc:hsqldb:file:" + database.toString());
+
+            String url = "jdbc:hsqldb:file:" + database.toString();
+            if (readonly) {
+                url += ";readonly=true";
+            }
+
+            connection = DriverManager.getConnection(url);
             connection.setAutoCommit(false);
+
+            ro = readonly;
+
             createDatabase();
         } catch (SQLException ex) {
+            close();
             throw new IOException("Could not open database", ex);
         }
     }
@@ -87,7 +124,10 @@ public class ImdbDatabase implements AutoCloseable {
     @Override
     public void close() throws IOException {
         try {
-            connection.close();
+            if (connection != null) {
+                connection.close();
+                connection = null;
+            }
         } catch (SQLException ex) {
             throw new IOException("Could not close database", ex);
         }
@@ -134,6 +174,8 @@ public class ImdbDatabase implements AutoCloseable {
      * Drops the database if it exists.
      */
     protected void dropDatabase() throws SQLException {
+        if (ro) return;
+
         try (Statement statement = createStatement()) {
             statement.executeUpdate("DROP TABLE IF EXISTS movie");
         }
@@ -143,6 +185,8 @@ public class ImdbDatabase implements AutoCloseable {
      * Creates a new database with all tables, unless it exists already.
      */
     protected void createDatabase() throws SQLException {
+        if (ro) return;
+
         try (Statement statement = createStatement()) {
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS movie ("
                 + "id INTEGER PRIMARY KEY,"
@@ -162,6 +206,8 @@ public class ImdbDatabase implements AutoCloseable {
      *            <tt>aka-titles.list</tt> file to be imported.
      */
     public void recreate(InputStream in) throws IOException {
+        if (connection == null || ro) return;
+
         try (ImdbReader titles = new ImdbReader(in)) {
             dropDatabase();
             createDatabase();
@@ -217,16 +263,18 @@ public class ImdbDatabase implements AutoCloseable {
     public List<String> findAll() throws IOException {
         List<String> result = new ArrayList<>();
 
-        try (Statement statement = createStatement()) {
-            ResultSet rs = statement.executeQuery(
-                            "SELECT CONCAT(title, ' (', year, ')')"
-                            + " FROM movie"
-                            + " ORDER BY id");
-            while (rs.next()) {
-                result.add(rs.getString(1));
+        if (connection != null) {
+            try (Statement statement = createStatement()) {
+                ResultSet rs = statement.executeQuery(
+                                "SELECT CONCAT(title, ' (', year, ')')"
+                                + " FROM movie"
+                                + " ORDER BY id");
+                while (rs.next()) {
+                    result.add(rs.getString(1));
+                }
+            } catch (SQLException ex) {
+                throw new IOException("Failed to read database", ex);
             }
-        } catch (SQLException ex) {
-            throw new IOException("Failed to read database", ex);
         }
 
         return result;
@@ -246,25 +294,35 @@ public class ImdbDatabase implements AutoCloseable {
     public List<String> find(String term, int limit) throws IOException {
         List<String> result = new ArrayList<>();
 
-        try (PreparedStatement ps = createPreparedStatement(
-                        "SELECT CONCAT(m2.title, ' (', m2.year, ')')"
-                        + " FROM movie m1, movie m2"
-                        + " WHERE m1.normalized LIKE ?"
-                        + " AND m2.movie = m1.movie"
-                        + " ORDER BY m2.id"
-                        + " LIMIT ?")) {
-            ps.setString(1, '%' + normalize(term) + '%');
-            ps.setInt(2, limit);
+        if (connection != null) {
+            try (PreparedStatement ps = createPreparedStatement(
+                            "SELECT CONCAT(m2.title, ' (', m2.year, ')')"
+                            + " FROM movie m1, movie m2"
+                            + " WHERE m1.normalized LIKE ?"
+                            + " AND m2.movie = m1.movie"
+                            + " ORDER BY m2.id"
+                            + " LIMIT ?")) {
+                ps.setString(1, '%' + normalize(term) + '%');
+                ps.setInt(2, limit);
 
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                result.add(rs.getString(1));
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    result.add(rs.getString(1));
+                }
+            } catch (SQLException ex) {
+                throw new IOException("Failed to find in database, term: '" + term + "', limit " + limit, ex);
             }
-        } catch (SQLException ex) {
-            throw new IOException("Failed to find in database, term: '" + term + "', limit " + limit, ex);
         }
 
         return result;
+    }
+
+    /**
+     * Checks if the database runs in read-only mode. This is {@code true} if the
+     * database is shared with another running instance of feinrip.
+     */
+    public boolean isReadOnly() {
+        return ro;
     }
 
 }
