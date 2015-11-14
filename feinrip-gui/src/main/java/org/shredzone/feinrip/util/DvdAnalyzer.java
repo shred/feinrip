@@ -187,6 +187,8 @@ public class DvdAnalyzer {
 
         List<Audio> result = new ArrayList<>();
 
+        boolean anyAudio = false;
+
         for (int ix = 0; ix < vts.getAudios().size(); ix++) {
             DvdAudio da = vts.getAudios().get(ix);
             if (da.getStreamId() == null) {
@@ -212,12 +214,18 @@ public class DvdAnalyzer {
             if (language != null) {
                 audio.setLanguage(language);
                 audio.setEnabled(true);
+                anyAudio = true;
             } else {
                 audio.setLanguage(LanguageUtils.getMissing());
                 audio.setEnabled(false);
             }
 
             result.add(audio);
+        }
+
+        // If there was no audio stream selected, just select the first one.
+        if (!anyAudio && !result.isEmpty()) {
+            result.get(0).setEnabled(true);
         }
 
         return result;
