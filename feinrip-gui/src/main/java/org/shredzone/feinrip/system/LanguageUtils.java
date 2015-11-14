@@ -117,6 +117,10 @@ public class LanguageUtils {
         seen.add("und");
         langList.add(langMap.get("und"));
 
+        // Then add "mis" language
+        seen.add("mis");
+        langList.add(langMap.get("mis"));
+
         // Then add all remaining languages
         langList.addAll(langMap.values().stream()
                 .distinct()
