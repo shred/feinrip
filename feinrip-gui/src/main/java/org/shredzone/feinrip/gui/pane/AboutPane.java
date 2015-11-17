@@ -42,7 +42,7 @@ public class AboutPane extends PowerPane {
         super(project);
         setLayout(new BorderLayout());
 
-        FeinripLogo logo = new FeinripLogo(50.0f);
+        FeinripLogo logo = new FeinripLogo(50.0f, true);
         add(logo, BorderLayout.NORTH);
 
         String info = MessageFormat.format(B.getString("pane.about.info"), new Date());

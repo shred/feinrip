@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ResourceBundle;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
@@ -32,6 +34,7 @@ import javax.swing.SwingConstants;
 public class FeinripLogo extends JLabel {
     private static final long serialVersionUID = 7792266734117853560L;
     private static final ResourceBundle B = ResourceBundle.getBundle("message");
+    private static final Icon logoIcon = new ImageIcon(FeinripLogo.class.getResource("/org/shredzone/feinrip/icon/feinrip-64x64.png"));
 
     private static final Font LOGO_FONT;
 
@@ -50,6 +53,15 @@ public class FeinripLogo extends JLabel {
     }
 
     public FeinripLogo(float size) {
+        this(size, false);
+    }
+
+    public FeinripLogo(float size, boolean icon) {
+        if (icon) {
+            setIcon(logoIcon);
+            setIconTextGap(10);
+            setHorizontalTextPosition(SwingConstants.LEFT);
+        }
         setFont(LOGO_FONT.deriveFont(Font.BOLD, size));
         setText(B.getString("title"));
         setHorizontalAlignment(SwingConstants.CENTER);
