@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
  feinrip
 
  Copyright (C) 2014 Richard "Shred" Körber
@@ -27,12 +27,12 @@
 
     <url>https://github.com/shred/feinrip</url>
     <scm>
-        <url>scm:git:git@github.com:shred/feinrip.git</url>
+        <url>https://github.com/shred/feinrip/</url>
         <connection>scm:git:git@github.com:shred/feinrip.git</connection>
         <developerConnection>scm:git:git@github.com:shred/feinrip.git</developerConnection>
     </scm>
     <issueManagement>
-        <system>Github</system>
+        <system>GitHub Issues</system>
         <url>https://github.com/shred/feinrip/issues</url>
     </issueManagement>
     <developers>
@@ -71,6 +71,58 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/.gitignore</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.4</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>dependencies</report>
+                            <report>issue-tracking</report>
+                            <report>license</report>
+                            <report>summary</report>
+                            <report>project-team</report>
+                            <report>scm</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.17</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <configuration>
+                    <links>
+                        <link>http://docs.oracle.com/javase/7/docs/api/</link>
+                        <link>http://docs.oracle.com/javaee/6/api/</link>
+                    </links>
+                    <charset>UTF-8</charset>
+                    <linksource>true</linksource>
+                    <additionalparam>-Xdoclint:syntax,reference</additionalparam>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
 </project>

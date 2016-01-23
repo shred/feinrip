@@ -1,0 +1,17 @@
+feinrip
+=======
+
+Feinrip is a GUI frontend for converting mpeg files to mkv files.
+
+![Screenshot](./img/screenshot.png)
+
+The source code can be found at [GitHub](https://github.com/shred/feinrip).
+
+Modules
+-------
+
+The project consists of three modules. Some of them may be useful in other projects as well:
+
+* [feinrip-gui](./feinrip-gui/index.html) - The main module, containing the Swing GUI
+* [feinrip-lsdvd](./feinrip-lsdvd/index.html) - A Java module for analyzing DVD structures
+* [feinrip-dvb](./feinrip-dvb/index.html) - A Java module for analyzing DVB streams for content descriptions
