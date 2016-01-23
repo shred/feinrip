@@ -58,7 +58,7 @@ public class DvdTitleSet {
     public void setLetterboxEnabled(boolean letterboxEnabled) { this.letterboxEnabled = letterboxEnabled; }
 
     /**
-     * Pan & Scan format enabled?
+     * Pan &amp; Scan format enabled?
      */
     public boolean isPanScanEnabled()           { return panScanEnabled; }
     public void setPanScanEnabled(boolean panScanEnabled) { this.panScanEnabled = panScanEnabled; }

@@ -63,7 +63,7 @@ public interface Source {
     boolean isValid();
 
     /**
-     * @{code true} if the vob file returned by {@link #createVobFile(ProgressMeter)}
+     * {@code true} if the vob file returned by {@link #createVobFile(ProgressMeter)}
      * is likely corrupted (for example because of read errors while reading a DVD).
      * <p>
      * Only valid after {@link #createVobFile(ProgressMeter)} has been invoked.

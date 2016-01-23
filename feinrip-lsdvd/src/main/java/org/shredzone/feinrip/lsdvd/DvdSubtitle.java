@@ -65,7 +65,7 @@ public class DvdSubtitle {
     public void setStreamLetterboxId(Integer streamLetterboxId) { this.streamLetterboxId = streamLetterboxId; }
 
     /**
-     * Stream ID for Pan & Scan subtitles, or {@code null} if not enabled.
+     * Stream ID for Pan &amp; Scan subtitles, or {@code null} if not enabled.
      */
     public Integer getStreamPanScanId()         { return streamPanScanId; }
     public void setStreamPanScanId(Integer streamPanScanId) { this.streamPanScanId = streamPanScanId; }
