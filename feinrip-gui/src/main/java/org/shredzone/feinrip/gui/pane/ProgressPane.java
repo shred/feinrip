@@ -48,6 +48,7 @@ import org.shredzone.feinrip.gui.source.SourceVobPane;
 import org.shredzone.feinrip.model.Configuration;
 import org.shredzone.feinrip.model.Project;
 import org.shredzone.feinrip.progress.ProgressMeter;
+import org.shredzone.feinrip.util.LogBuilder;
 
 /**
  * PowerPane that shows the progress of a running conversion.
@@ -73,7 +74,7 @@ public class ProgressPane extends PowerPane implements ConfigurablePane, Progres
     private JCheckBox jcAudioDemux;
     private JCheckBox jcHold;
     private Long startTime = null;
-    private StringBuilder logBuilder = new StringBuilder();
+    private LogBuilder logBuilder = new LogBuilder();
     private Frame frame;
     private String frameTitle;
     private long nextPercentOutput = 0;
@@ -103,7 +104,7 @@ public class ProgressPane extends PowerPane implements ConfigurablePane, Progres
     public void cleanup() {
         jtfInfo.setText("");
         jtaLog.setText("");
-        logBuilder = new StringBuilder();
+        logBuilder.clear();
         if (frame != null) {
             frame.setTitle(frameTitle);
         }
@@ -288,15 +289,12 @@ public class ProgressPane extends PowerPane implements ConfigurablePane, Progres
 
     @Override
     public ProgressMeter log(final String line) {
-        final int cursor = logBuilder.length();
-        if (cursor > 0) {
-            logBuilder.append("\n");
-        }
         logBuilder.append(line);
 
         EventQueue.invokeLater(() -> {
-            jtaLog.setText(logBuilder.toString());
-            jtaLog.setCaretPosition(cursor + 1);
+            String text = logBuilder.toString();
+            jtaLog.setText(text);
+            jtaLog.setCaretPosition(text.lastIndexOf('\n') + 1);
         });
         return this;
     }
