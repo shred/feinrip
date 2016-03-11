@@ -44,7 +44,9 @@ public class LogConsumer implements Consumer<String> {
     @Override
     public void accept(String line) {
         System.out.println(line); // DEBUG
-        meter.log(line);
+        if (!line.trim().isEmpty()) {
+            meter.log(line);
+        }
     }
 
 }
