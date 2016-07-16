@@ -21,9 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Set;
 
-import org.shredzone.feinrip.gui.ErrorDialog;
 import org.shredzone.feinrip.model.Audio;
 import org.shredzone.feinrip.model.Chapter;
 import org.shredzone.feinrip.model.Configuration;
@@ -34,7 +32,6 @@ import org.shredzone.feinrip.model.Track;
 import org.shredzone.feinrip.progress.ProgressMeter;
 import org.shredzone.feinrip.system.EitAnalyzer;
 import org.shredzone.feinrip.system.StreamUtils;
-import org.shredzone.feinrip.system.TrackAnalyzer;
 import org.shredzone.feinrip.util.DvdAnalyzer;
 import org.shredzone.feinrip.util.VobsubIndex;
 import org.shredzone.feinrip.util.VobsubIndex.Setting;
@@ -204,11 +201,6 @@ public class DvdSource extends AbstractSource implements TrackableSource {
                     .findFirst()
                     .ifPresent(audio -> project.setDefAudio(audio));
         }
-        try {
-            setAudioAvailableState(audios);
-        } catch (IOException ex) {
-            ErrorDialog.showException(ex);
-        }
         project.touchAudios();
 
         List<Subtitle> subtitles = dvd.getSubtitles(getSelectedTrackNr());
@@ -225,23 +217,6 @@ public class DvdSource extends AbstractSource implements TrackableSource {
 
         project.setAspect(track != null ? track.getAspect() : null);
         project.setSize(track != null ? track.getDimension() : null);
-    }
-
-    /**
-     * Sets the available state of each {@link Audio} entry according to the actually
-     * available audio streams.
-     */
-    private void setAudioAvailableState(List<Audio> audios) throws IOException {
-        int trackNr = getSelectedTrackNr();
-
-        if (trackNr > 0) {
-            TrackAnalyzer analyzer = new TrackAnalyzer(device, trackNr);
-            Set<Integer> audioIds = analyzer.getAudioIds();
-            audios.forEach(a -> {
-                a.setAvailable(audioIds.contains(a.getStreamId()));
-                a.setEnabled(a.isEnabled() && a.isAvailable());
-            });
-        }
     }
 
     @Override
