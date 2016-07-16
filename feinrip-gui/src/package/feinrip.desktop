@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Feinrip
+GenericName=MKV Generator
+Comment=Convert mpeg files to mkv
+Comment[de]=mpeg-Dateien in mkv umwandeln
+Keywords=mpeg;mkv;dvd;vob;convert;
+Exec=feinrip
+Icon=feinrip
+Terminal=false
+Type=Application
+Categories=AudioVideo;Archiving;Java;

@@ -60,6 +60,82 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <version>2.1.4</version>
+                <configuration>
+                    <name>feinrip</name>
+                    <description>Convert all kind of mpeg sources to mkv files</description>
+                    <group>Applications/Multimedia</group>
+                    <license>GPL</license>
+                    <requires>
+                        <require>ffmpeg &gt;= 2.1.0</require>
+                        <require>mplayer &gt;= 1.1</require>
+                        <require>mencoder &gt;= 1.1</require>
+                        <require>mkvtoolnix &gt;= 7.4.0</require>
+                        <require>transcode &gt;= 1.1.7</require>
+                        <require>java-1.8.0-openjdk</require>
+                        <require>sed</require><!-- for installation only -->
+                    </requires>
+                    <postinstallScriptlet>
+                        <scriptFile>src/package/rpm/postinstall.sh</scriptFile>
+                        <fileEncoding>utf-8</fileEncoding>
+                    </postinstallScriptlet>
+                    <postremoveScriptlet>
+                        <scriptFile>src/package/rpm/postremove.sh</scriptFile>
+                        <fileEncoding>utf-8</fileEncoding>
+                    </postremoveScriptlet>
+                    <posttransScriptlet>
+                        <scriptFile>src/package/rpm/posttrans.sh</scriptFile>
+                        <fileEncoding>utf-8</fileEncoding>
+                    </posttransScriptlet>
+                    <mappings>
+                        <mapping>
+                            <directory>%{_datadir}/feinrip</directory>
+                            <filemode>755</filemode>
+                            <sources>
+                                <source>
+                                    <location>target/feinrip.jar</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>%{_bindir}</directory>
+                            <directoryIncluded>false</directoryIncluded>
+                            <filemode>755</filemode>
+                            <sources>
+                                <source>
+                                    <location>src/package/bin/feinrip</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>%{_datadir}/applications</directory>
+                            <directoryIncluded>false</directoryIncluded>
+                            <filemode>644</filemode>
+                            <sources>
+                                <source>
+                                    <location>src/package/feinrip.desktop</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                        <mapping>
+                            <directory>%{_datadir}/icons/hicolor</directory>
+                            <directoryIncluded>false</directoryIncluded>
+                            <filemode>644</filemode>
+                            <sources>
+                                <source>
+                                    <location>src/package/icons</location>
+                                </source>
+                            </sources>
+                        </mapping>
+                    </mappings>
+                    <defineStatements>
+                        <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
+                    </defineStatements>
+                </configuration>
+          </plugin>
         </plugins>
     </build>
 
