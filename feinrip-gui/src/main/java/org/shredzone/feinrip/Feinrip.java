@@ -18,12 +18,16 @@ package org.shredzone.feinrip;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 
@@ -63,6 +67,12 @@ public class Feinrip extends JFrame {
 
         FeinripPane pane = new FeinripPane();
         getContentPane().add(pane, BorderLayout.CENTER);
+
+        List<Image> iconImages = new ArrayList<>();
+        iconImages.add(new ImageIcon(Feinrip.class.getResource("/org/shredzone/feinrip/icon/feinrip-64x64.png")).getImage());
+        iconImages.add(new ImageIcon(Feinrip.class.getResource("/org/shredzone/feinrip/icon/feinrip-32x32.png")).getImage());
+        iconImages.add(new ImageIcon(Feinrip.class.getResource("/org/shredzone/feinrip/icon/feinrip-16x16.png")).getImage());
+        setIconImages(iconImages);
 
         int fw = prefs.getInt("win.size.w", -1);
         int fh = prefs.getInt("win.size.h", -1);
