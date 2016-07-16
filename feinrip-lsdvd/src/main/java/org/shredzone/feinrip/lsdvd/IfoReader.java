@@ -239,13 +239,14 @@ public class IfoReader {
         for (int ix = 0; ix < 8; ix++) {
             int snr = vts.readu8();
             if ((snr & 0x80) != 0) {
-                DvdAudio audio = titleSet.getAudios().get(ix);
+                DvdAudio audio = new DvdAudio(titleSet.getAudioAttributes().get(ix));
                 int streamId = snr & 0x07;
                 if (streamId == 0) {
                     streamId = ix;
                 }
                 streamId += audio.getMode().getBaseStreamId();
                 audio.setStreamId(streamId);
+                title.getAudios().add(audio);
             }
             vts.skip(1);
         }
@@ -261,7 +262,7 @@ public class IfoReader {
                 sLetterbox &= 0x1F;
                 sPanScan &= 0x1F;
 
-                DvdSubtitle sub = titleSet.getSubs().get(ix);
+                DvdSubtitle sub = new DvdSubtitle(titleSet.getSubAttributes().get(ix));
                 if (titleSet.getAspect() == Aspect.ASPECT_16_9) {
                     sub.setStreamWideId((sWide > 0 ? sWide : ix) + 0x20);
                 } else {
@@ -275,6 +276,8 @@ public class IfoReader {
                 if (titleSet.isPanScanEnabled()) {
                     sub.setStreamPanScanId((sPanScan > 0 ? sPanScan : ix) + 0x20);
                 }
+
+                title.getSubs().add(sub);
             }
         }
 

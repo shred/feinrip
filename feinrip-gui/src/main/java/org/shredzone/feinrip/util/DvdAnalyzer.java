@@ -183,17 +183,13 @@ public class DvdAnalyzer {
         }
 
         DvdTitle title = info.getTitle(trackNr - 1);
-        DvdTitleSet vts = title.getTitleSet();
 
         List<Audio> result = new ArrayList<>();
 
         boolean anyAudio = false;
 
-        for (int ix = 0; ix < vts.getAudios().size(); ix++) {
-            DvdAudio da = vts.getAudios().get(ix);
-            if (da.getStreamId() == null) {
-                continue;
-            }
+        for (int ix = 0; ix < title.getAudios().size(); ix++) {
+            DvdAudio da = title.getAudios().get(ix);
 
             Audio audio = new Audio();
             audio.setIx(ix + 1);
@@ -244,13 +240,12 @@ public class DvdAnalyzer {
         }
 
         DvdTitle title = info.getTitle(trackNr - 1);
-        DvdTitleSet vts = title.getTitleSet();
 
         List<Subtitle> result = new ArrayList<>();
         Set<Integer> seen = new HashSet<>(); // make sure streams appear only once
 
         int index = 1;
-        for (DvdSubtitle ds : vts.getSubs()) {
+        for (DvdSubtitle ds : title.getSubs()) {
             if (ds.getStream43Id() != null && !seen.contains(ds.getStream43Id())) {
                 result.add(createSubtitle(index++, ds.getStream43Id(), title.getVtsn(), ds, SubtitleFormat.STANDARD));
                 seen.add(ds.getStream43Id());

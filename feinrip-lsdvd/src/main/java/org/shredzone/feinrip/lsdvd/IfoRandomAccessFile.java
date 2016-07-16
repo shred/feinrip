@@ -23,9 +23,9 @@ import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.shredzone.feinrip.lsdvd.DvdAudio.Mode;
-import org.shredzone.feinrip.lsdvd.DvdAudio.Type;
-import org.shredzone.feinrip.lsdvd.DvdSubtitle.SubType;
+import org.shredzone.feinrip.lsdvd.DvdAudioAttributes.Mode;
+import org.shredzone.feinrip.lsdvd.DvdAudioAttributes.Type;
+import org.shredzone.feinrip.lsdvd.DvdSubtitleAttributes.SubType;
 import org.shredzone.feinrip.lsdvd.DvdTitleSet.Aspect;
 import org.shredzone.feinrip.lsdvd.DvdTitleSet.Format;
 
@@ -268,14 +268,14 @@ public class IfoRandomAccessFile extends RandomAccessFile {
     }
 
     /**
-     * Reads audio attributes and returns a {@link DvdAudio}. The cursor is expected at
-     * the start of the audio attribute structure, and is placed at the start of the next
-     * audio attribute structure.
+     * Reads audio attributes and returns a {@link DvdAudioAttributes}. The cursor is
+     * expected at the start of the audio attribute structure, and is placed at the start
+     * of the next audio attribute structure.
      *
-     * @return {@link DvdAudio} containing decoded audio attributes
+     * @return {@link DvdAudioAttributes} containing decoded audio attributes
      */
-    public DvdAudio readAudioAttributes() throws IOException {
-        DvdAudio audio = new DvdAudio();
+    public DvdAudioAttributes readAudioAttributes() throws IOException {
+        DvdAudioAttributes audio = new DvdAudioAttributes();
 
         int flag1 = readu8();
         switch (flag1 & 0xE0) {
@@ -310,14 +310,14 @@ public class IfoRandomAccessFile extends RandomAccessFile {
     }
 
     /**
-     * Reads subtitle attributes and returns a {@link DvdSubtitle}. The cursor is expected
-     * at the start of the subtitle attribute structure, and is placed at the start of the
-     * next subtitle attribute structure.
+     * Reads subtitle attributes and returns a {@link DvdSubtitleAttributes}. The cursor
+     * is expected at the start of the subtitle attribute structure, and is placed at the
+     * start of the next subtitle attribute structure.
      *
-     * @return {@link DvdSubtitle} containing decoded subtitle attributes
+     * @return {@link DvdSubtitleAttributes} containing decoded subtitle attributes
      */
-    public DvdSubtitle readSubtitleAttributes() throws IOException {
-        DvdSubtitle sub = new DvdSubtitle();
+    public DvdSubtitleAttributes readSubtitleAttributes() throws IOException {
+        DvdSubtitleAttributes sub = new DvdSubtitleAttributes();
 
         int flags1 = readu8();
         skip(1);
@@ -386,7 +386,7 @@ public class IfoRandomAccessFile extends RandomAccessFile {
         int audios = readu16();
         for (int ix = 0; ix < 8; ix++) {
             if (ix < audios) {
-                titleSet.getAudios().add(readAudioAttributes());
+                titleSet.getAudioAttributes().add(readAudioAttributes());
             } else {
                 skip(8);
             }
@@ -397,7 +397,7 @@ public class IfoRandomAccessFile extends RandomAccessFile {
         int subs = readu16();
         for (int ix = 0; ix < 32; ix++) {
             if (ix < subs) {
-                titleSet.getSubs().add(readSubtitleAttributes());
+                titleSet.getSubAttributes().add(readSubtitleAttributes());
             } else {
                 skip(6);
             }

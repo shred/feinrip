@@ -15,73 +15,60 @@
  */
 package org.shredzone.feinrip.lsdvd;
 
+import org.shredzone.feinrip.lsdvd.DvdAudioAttributes.Mode;
+import org.shredzone.feinrip.lsdvd.DvdAudioAttributes.Type;
+
 /**
- * Information about audio streams.
+ * Information about a title's individual audio stream.
  *
  * @author Richard "Shred" Körber
  */
 public class DvdAudio {
 
-    public enum Mode {
-        MPEG1(0xC0), MPEG2(0xC0), AC3(0x80), LPCM(0xA0), DTS(0x88), SDDS(0x80);
-
-        private final int baseStreamId;
-
-        private Mode(int baseStreamId) {
-            this.baseStreamId = baseStreamId;
-        }
-
-        public int getBaseStreamId() {
-            return baseStreamId;
-        }
-    }
-
-    public enum Type { NORMAL, VISUALLY_IMPAIRED, DIRECTORS_COMMENT, ALTERNATE };
-
-    private Mode mode;
-    private int channels;
-    private Type type;
-    private String lang;
+    private final DvdAudioAttributes attrs;
     private Integer streamId;
 
     /**
-     * Audio stream mode.
+     * Create a new {@link DvdAudio}.
+     *
+     * @param attrs
+     *            Generic {@link DvdAudioAttributes} of this audio stream.
      */
-    public Mode getMode()                       { return mode; }
-    public void setMode(Mode mode)              { this.mode = mode; }
+    public DvdAudio(DvdAudioAttributes attrs) {
+        this.attrs = attrs;
+    }
 
-    /**
-     * Number of channels.
-     */
-    public int getChannels()                    { return channels; }
-    public void setChannels(int channels)       { this.channels = channels; }
+   /**
+    * Audio stream mode.
+    */
+   public Mode getMode()                       { return attrs.getMode(); }
 
-    /**
-     * Audio stream type, or {@code null} if unspecified.
-     */
-    public Type getType()                       { return type; }
-    public void setType(Type type)              { this.type = type; }
+   /**
+    * Number of channels.
+    */
+   public int getChannels()                    { return attrs.getChannels(); }
 
-    /**
-     * Audio stream language, or {@code null} if unspecified.
-     */
-    public String getLang()                     { return lang; }
-    public void setLang(String lang)            { this.lang = lang; }
+   /**
+    * Audio stream type, or {@code null} if unspecified.
+    */
+   public Type getType()                       { return attrs.getType(); }
+
+   /**
+    * Audio stream language, or {@code null} if unspecified.
+    */
+   public String getLang()                     { return attrs.getLang(); }
 
     /**
      * Stream ID for this audio stream, or {@code null} if this stream is disabled.
      */
-    public Integer getStreamId()                { return streamId; }
-    public void setStreamId(Integer streamId)   { this.streamId = streamId; }
+    public Integer getStreamId()               { return streamId; }
+    public void setStreamId(Integer streamId)  { this.streamId = streamId; }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[audio ");
-        sb.append("mode=").append(mode);
-        sb.append(", channels=").append(channels);
-        sb.append(", type=").append(type);
-        sb.append(", language=").append(lang);
+        sb.append(attrs.toString());
         sb.append(", streamId=").append(streamId);
         sb.append("]");
         return sb.toString();

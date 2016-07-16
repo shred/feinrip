@@ -30,14 +30,25 @@ public class DvdTitleSet {
     public enum Format { NTSC, PAL };
     public enum Aspect { ASPECT_4_3, ASPECT_16_9 };
 
-    private final List<DvdAudio> audios = new ArrayList<>();
-    private final List<DvdSubtitle> subs = new ArrayList<>();
+    private final List<DvdAudioAttributes> audioAttrs = new ArrayList<>();
+    private final List<DvdSubtitleAttributes> subAttrs = new ArrayList<>();
     private Format format;
     private Aspect aspect;
     private boolean panScanEnabled;
     private boolean letterboxEnabled;
     private int width;
     private int height;
+
+    /**
+     * {@link DvdAudioAttributes} streams. First VTS is at index 0.
+     */
+    public List<DvdAudioAttributes> getAudioAttributes() { return audioAttrs; }
+
+    /**
+     * {@link DvdSubtitleAttributes} streams. First VTS is at index 0.
+     */
+    public List<DvdSubtitleAttributes> getSubAttributes() { return subAttrs; }
+
 
     /**
      * Video format.
@@ -75,16 +86,6 @@ public class DvdTitleSet {
     public int getHeight()                      { return height; }
     public void setHeight(int height)           { this.height = height; }
 
-    /**
-     * {@link DvdAudio} streams. First VTS is at index 0.
-     */
-    public List<DvdAudio> getAudios()           { return audios; }
-
-    /**
-     * {@link DvdSubtitle} streams. First VTS is at index 0.
-     */
-    public List<DvdSubtitle> getSubs()          { return subs; }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -95,13 +96,13 @@ public class DvdTitleSet {
         sb.append(", panscan=").append(panScanEnabled);
         sb.append(", width=").append(width);
         sb.append(", height=").append(height);
-        sb.append(", audios=");
-        sb.append(audios.stream()
-                        .map(DvdAudio::toString)
+        sb.append(", audioattrs=");
+        sb.append(audioAttrs.stream()
+                        .map(DvdAudioAttributes::toString)
                         .collect(Collectors.joining(" ", "[", "]")));
-        sb.append(", subs=");
-        sb.append(subs.stream()
-                        .map(DvdSubtitle::toString)
+        sb.append(", subattrs=");
+        sb.append(subAttrs.stream()
+                        .map(DvdSubtitleAttributes::toString)
                         .collect(Collectors.joining(" ", "[", "]")));
         sb.append("]");
         return sb.toString();

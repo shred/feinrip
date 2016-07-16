@@ -29,6 +29,8 @@ public class DvdTitle {
 
     private final int[] colors = new int[16];
     private final List<Long> chapterTimeMs = new ArrayList<>();
+    private final List<DvdAudio> audios = new ArrayList<>();
+    private final List<DvdSubtitle> subs = new ArrayList<>();
     private int title;
     private int chapters;
     private int angles;
@@ -46,6 +48,16 @@ public class DvdTitle {
      * Length of each chapter, in milliseconds.
      */
     public List<Long> getChapterTimeMs()        { return chapterTimeMs; }
+
+    /**
+     * {@link DvdAudio} streams. First VTS is at index 0.
+     */
+    public List<DvdAudio> getAudios()           { return audios; }
+
+    /**
+     * {@link DvdSubtitle} streams. First VTS is at index 0.
+     */
+    public List<DvdSubtitle> getSubs()          { return subs; }
 
     /**
      * Title number, counted from 1.
@@ -95,6 +107,14 @@ public class DvdTitle {
         StringBuilder sb = new StringBuilder();
         sb.append("[title ").append(title);
         sb.append(", chapters=").append(chapters);
+        sb.append(", audios=");
+        sb.append(audios.stream()
+                        .map(DvdAudio::toString)
+                        .collect(Collectors.joining(" ", "[", "]")));
+        sb.append(", subs=");
+        sb.append(subs.stream()
+                        .map(DvdSubtitle::toString)
+                        .collect(Collectors.joining(" ", "[", "]")));
         sb.append(", angles=").append(angles);
         sb.append(", vtsn=").append(vtsn);
         sb.append(", vts=").append(vts);

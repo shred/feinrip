@@ -15,36 +15,40 @@
  */
 package org.shredzone.feinrip.lsdvd;
 
+import org.shredzone.feinrip.lsdvd.DvdSubtitleAttributes.SubType;
+
 /**
- * Subtitle information.
+ * Information about a title's individual subtitle stream.
  *
  * @author Richard "Shred" Körber
  */
 public class DvdSubtitle {
 
-    public enum SubType { NORMAL, LARGE, CHILDREN, NORMAL_CAPTIONS, LARGE_CAPTIONS,
-        CHILDREN_CAPTIONS, FORCED, DIRECTOR_COMMENTS, LARGE_DIRECTOR_COMMENTS,
-        CHILDREN_DIRECTOR_COMMENTS }
-
-    private SubType type;
-    private String language;
+    private final DvdSubtitleAttributes attrs;
     private Integer stream43Id;
     private Integer streamWideId;
     private Integer streamLetterboxId;
     private Integer streamPanScanId;
 
+    /**
+     * Create a new {@link DvdSubtitle}.
+     *
+     * @param attrs
+     *            Generic {@link DvdSubtitleAttributes} of this subtitle stream.
+     */
+    public DvdSubtitle(DvdSubtitleAttributes attrs) {
+        this.attrs = attrs;
+    }
 
     /**
      * Subtitle type, or {@code null} if unspecified.
      */
-    public SubType getType()                    { return type; }
-    public void setType(SubType type)           { this.type = type; }
+    public SubType getType()                    { return attrs.getType(); }
 
     /**
      * Language code, or {@code null} if unspecified.
      */
-    public String getLanguage()                 { return language; }
-    public void setLanguage(String language)    { this.language = language; }
+    public String getLanguage()                 { return attrs.getLanguage(); }
 
     /**
      * Stream ID for 4:3 subtitles, or {@code null} if not enabled.
@@ -74,8 +78,7 @@ public class DvdSubtitle {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[sub ");
-        sb.append("type=").append(type);
-        sb.append(", language=").append(language);
+        sb.append(attrs.toString());
         sb.append(", stream43Id=").append(stream43Id);
         sb.append(", streamWideId=").append(streamWideId);
         sb.append(", streamLetterboxId=").append(streamLetterboxId);
