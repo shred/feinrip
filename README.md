@@ -1,4 +1,4 @@
-# Feinrip
+# Feinrip ![build status](https://shredzone.org/badge/feinrip.svg)
 
 Feinrip is a GUI frontend for converting mpeg files to mkv files.
 
