@@ -71,6 +71,7 @@ public class TitlePane extends PowerPane implements ConfigurablePane, ListSelect
     private JCheckBox jcbImdbEnabled;
     private JCheckBox jcbOfdbEnabled;
     private JCheckBox jcbOmdbEnabled;
+    private JCheckBox jcbTvdbAired;
 
     public TitlePane(Project project) {
         super(project);
@@ -166,6 +167,10 @@ public class TitlePane extends PowerPane implements ConfigurablePane, ListSelect
             jcbOmdbEnabled.addChangeListener(e -> config.setOmdbEnabled(jcbOmdbEnabled.isSelected()));
             jpConfig.add(lg = new JLabelGroup(jcbOmdbEnabled, "", lg));
 
+            jcbTvdbAired = new JCheckBox(B.getString("pane.title.tvdbaired"));
+            jcbTvdbAired.setSelected(config.isTvdbAired());
+            jcbTvdbAired.addChangeListener(e -> config.setTvdbAired(jcbTvdbAired.isSelected()));
+            jpConfig.add(lg = new JLabelGroup(jcbTvdbAired, "", lg));
 
             lg.rearrange();
         }

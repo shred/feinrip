@@ -84,7 +84,7 @@ public class TvdbQueryAction extends AbstractAsyncAction implements PropertyChan
     @Override
     public void onAction(ActionEvent e) {
         try {
-            series = TvdbService.findSeries(project.getTitle().trim());
+            series = TvdbService.instance().findSeries(project.getTitle().trim());
         } catch (IOException ex) {
             // Silently ignore the exception and return an empty list
             series = Collections.emptyList();
@@ -145,7 +145,7 @@ public class TvdbQueryAction extends AbstractAsyncAction implements PropertyChan
                 @Override
                 protected void onAction() {
                     try {
-                        episodes = TvdbService.findEpisodes(selection);
+                        episodes = TvdbService.instance().findEpisodes(selection);
                     } catch (IOException ex) {
                         episodes = Collections.emptyList();
                     }

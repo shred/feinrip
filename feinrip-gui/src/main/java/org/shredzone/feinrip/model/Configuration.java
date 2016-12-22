@@ -33,6 +33,7 @@ public class Configuration {
     private static final String IMDB_ENABLE = "imdbEnable";
     private static final String OMDB_ENABLE = "omdbEnable";
     private static final String OFDB_ENABLE = "ofdbEnable";
+    private static final String TVDB_AIRED = "tvdbAired";
 
     /**
      * Returns the global {@link Configuration} instance.
@@ -195,6 +196,20 @@ public class Configuration {
      */
     public boolean isOfdbEnabled() {
         return prefs.getBoolean(OFDB_ENABLE, true);
+    }
+
+    /**
+     * Sets if TheTVDB aired titles should be used instead of DVD titles.
+     */
+    public void setTvdbAired(boolean aired) {
+        prefs.putBoolean(TVDB_AIRED, aired);
+    }
+
+    /**
+     * Checks if TheTVDB aired titles should be used instead of DVD titles.
+     */
+    public boolean isTvdbAired() {
+        return prefs.getBoolean(TVDB_AIRED, true);
     }
 
 }
