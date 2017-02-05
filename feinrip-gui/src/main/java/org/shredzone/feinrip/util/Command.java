@@ -74,6 +74,13 @@ public class Command {
         return this;
     }
 
+    /**
+     * Changes the "failed if" predicate. By default, a command failed if it returned a
+     * different return code than 0.
+     *
+     * @param predicate
+     *            Failure predicate
+     */
     public Command failedIf(Predicate<Integer> predicate) {
         this.hasFailed = predicate;
         return this;
