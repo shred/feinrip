@@ -1,28 +1,7 @@
-#
-# feinrip
-#
-# Copyright (C) 2014 Richard "Shred" Körber
-#   https://github.com/shred/feinrip
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#
 
 image: maven:3-jdk-8
 
-# Cache local m2 repository
-# https://gitlab.com/gitlab-org/gitlab-ce/issues/15167#note_15206811
-variables:
-  MAVEN_OPTS: -Dmaven.repo.local=/cache/maven.repository
-
 build:
   script:
-    - mvn -B test site:site
-  tags:
-    - maven
+    - mvn -B clean org.jacoco:jacoco-maven-plugin:prepare-agent install site:site -Dmaven.test.failure.ignore=true
+    - mvn -B sonar:sonar -Dsonar.gitlab.commit_sha=$CI_BUILD_REF -Dsonar.gitlab.ref_name=$CI_BUILD_REF_NAME
