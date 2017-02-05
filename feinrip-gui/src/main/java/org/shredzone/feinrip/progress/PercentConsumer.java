@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  */
 public class PercentConsumer extends LogConsumer {
 
-    private static final Pattern PERCENT = Pattern.compile(".*?(\\d{1,3}(\\.\\d+)?)%.*");
+    private static final Pattern PERCENT = Pattern.compile(".*?(\\d{1,3}(\\.\\d+)?)\\s?%.*");
 
     /**
      * Creates a new {@link PercentConsumer}.
