@@ -178,7 +178,9 @@ public class VobSource extends AbstractSource {
 
             return null;
         } finally {
-            vobsubFile.delete();
+            if (!vobsubFile.delete()) {
+                throw new IOException("Could not delete " + vobsubFile.getAbsolutePath());
+            }
         }
     }
 
@@ -187,8 +189,12 @@ public class VobSource extends AbstractSource {
         if (file != null) {
             String name = file.getAbsolutePath();
             File subFile = new File(name.substring(0, name.length() - 3).concat("sub"));
-            file.delete();
-            subFile.delete();
+            if (!file.delete()) {
+                throw new IOException("Could not delete " + file.getAbsolutePath());
+            }
+            if (!subFile.delete()) {
+                throw new IOException("Could not delete " + subFile.getAbsolutePath());
+            }
         }
     }
 

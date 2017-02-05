@@ -153,7 +153,7 @@ public class DeviceUtils {
                         try {
                             Thread.sleep(POLL_FREQUENCY);
                         } catch (InterruptedException ex) {
-                            // ignore
+                            Thread.currentThread().interrupt();
                         }
                     }
                 };

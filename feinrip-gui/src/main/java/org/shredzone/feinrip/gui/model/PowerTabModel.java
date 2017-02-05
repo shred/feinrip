@@ -17,17 +17,20 @@ package org.shredzone.feinrip.gui.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 /**
  * A model containing data for a single PowerTab tab.
  *
  * @author Richard "Shred" Körber
  */
-public class PowerTabModel {
+public class PowerTabModel implements Serializable {
+    private static final long serialVersionUID = 6090146237287651462L;
 
-    private Icon icon;
+    private ImageIcon icon;
     private String title;
     private String body;
 
@@ -37,8 +40,8 @@ public class PowerTabModel {
         return icon;
     }
 
-    public void setIcon(Icon icon) {
-        Icon old = this.icon;
+    public void setIcon(ImageIcon icon) {
+        ImageIcon old = this.icon;
         this.icon = icon;
         support.firePropertyChange("icon", old, icon);
     }

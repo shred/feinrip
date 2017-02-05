@@ -115,7 +115,7 @@ public class AudioPane extends PowerPane {
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
             case "audios":
-            case "source":
+            case "source": //NOSONAR: falls through
                 updateSource();
                 // falls through...
 

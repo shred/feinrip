@@ -40,7 +40,7 @@ import org.shredzone.feinrip.gui.ErrorDialog;
  *
  * @author Richard "Shred" Körber
  */
-public class ImdbDatabase implements AutoCloseable {
+public class ImdbDatabase {
 
     private static final int QUERY_TIMEOUT = 30;
     private static final Pattern TITLE_PATTERN = Pattern.compile("(\\s+\\(aka\\s+)?(.*?)\\s+\\((\\d{4})\\).*");
@@ -121,7 +121,9 @@ public class ImdbDatabase implements AutoCloseable {
         }
     }
 
-    @Override
+    /**
+     * Closes the database connection.
+     */
     public void close() throws IOException {
         try {
             if (connection != null) {
@@ -264,11 +266,11 @@ public class ImdbDatabase implements AutoCloseable {
         List<String> result = new ArrayList<>();
 
         if (connection != null) {
-            try (Statement statement = createStatement()) {
-                ResultSet rs = statement.executeQuery(
-                                "SELECT CONCAT(title, ' (', year, ')')"
-                                + " FROM movie"
-                                + " ORDER BY id");
+            try (Statement statement = createStatement();
+                    ResultSet rs = statement.executeQuery(
+                            "SELECT CONCAT(title, ' (', year, ')')"
+                            + " FROM movie"
+                            + " ORDER BY id")) {
                 while (rs.next()) {
                     result.add(rs.getString(1));
                 }

@@ -170,7 +170,8 @@ public class Command {
                 errGobbler.join();
             }
         } catch (InterruptedException ex) {
-            throw new IOException("interrupted");
+            Thread.currentThread().interrupt();
+            throw new IOException("interrupted", ex);
         }
 
         if (hasFailed.test(rc)) {

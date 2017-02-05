@@ -61,15 +61,15 @@ public class EitAnalyzer {
 
             for (Descriptor d : ei.getDescriptors()) {
                 if (d instanceof ShortEventDescriptor) {
-                    String title = ((ShortEventDescriptor) d).getEventName();
+                    StringBuilder title = new StringBuilder(((ShortEventDescriptor) d).getEventName());
                     String more = ((ShortEventDescriptor) d).getText();
 
                     Matcher m = YEAR_PATTERN.matcher(more);
                     if (m.matches()) {
-                        title += " (" + m.group(1) + ")";
+                        title.append(" (").append(m.group(1)).append(")");
                     }
 
-                    return title;
+                    return title.toString();
                 }
             }
         }

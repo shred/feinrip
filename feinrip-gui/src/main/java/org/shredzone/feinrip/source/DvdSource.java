@@ -271,7 +271,9 @@ public class DvdSource extends AbstractSource implements TrackableSource {
     @Override
     public void deleteVobFile(File vob) throws IOException {
         if (vob != null && vob.exists()) {
-            vob.delete();
+            if (!vob.delete()) {
+                throw new IOException("Could not delete " + vob.getAbsolutePath());
+            }
         }
     }
 
@@ -301,7 +303,9 @@ public class DvdSource extends AbstractSource implements TrackableSource {
 
             return idxFile;
         } finally {
-            vobsubFile.delete();
+            if (!vobsubFile.delete()) {
+                throw new IOException("Could not delete " + vobsubFile.getAbsolutePath());
+            }
         }
     }
 
@@ -312,8 +316,12 @@ public class DvdSource extends AbstractSource implements TrackableSource {
             // Do not delete srt files, because they are not ours...
             if (name.endsWith(".idx")) {
                 File subFile = new File(name.substring(0, name.length() - 3).concat("sub"));
-                file.delete();
-                subFile.delete();
+                if (!file.delete()) {
+                    throw new IOException("Could not delete " + file.getAbsolutePath());
+                }
+                if (!subFile.delete()) {
+                    throw new IOException("Could not delete " + subFile.getAbsolutePath());
+                }
             }
         }
     }

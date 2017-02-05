@@ -33,6 +33,6 @@ public enum SubtitleFormat {
     @Override
     public String toString() {
         return B.getString("subformat." + name().toLowerCase());
-    };
+    }
 
 }

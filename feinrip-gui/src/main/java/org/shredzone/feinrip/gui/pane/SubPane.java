@@ -112,7 +112,7 @@ public class SubPane extends PowerPane {
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
             case "source":
-            case "subs":
+            case "subs": //NOSONAR: falls through
                 updateSource();
                 // falls through...
 

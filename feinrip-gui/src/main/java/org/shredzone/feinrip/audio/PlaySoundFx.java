@@ -71,9 +71,8 @@ public class PlaySoundFx {
     }
 
     private static SourceDataLine getLine(AudioFormat audioFormat) throws LineUnavailableException {
-        SourceDataLine res = null;
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-        res = (SourceDataLine) AudioSystem.getLine(info);
+        SourceDataLine res = (SourceDataLine) AudioSystem.getLine(info);
         res.open(audioFormat);
         return res;
     }

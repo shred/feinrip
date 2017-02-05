@@ -65,7 +65,9 @@ public class ProgressPane extends PowerPane implements ConfigurablePane, Progres
     private static final ResourceBundle B = ResourceBundle.getBundle("message");
     private static final Icon selectFileIcon = new ImageIcon(SourceVobPane.class.getResource("/org/shredzone/feinrip/icon/file.png"));
 
-    private Configuration config = Configuration.global();
+    private final Configuration config = Configuration.global();
+    private final LogBuilder logBuilder = new LogBuilder();
+
     private JProgressBar jpbProgress;
     private JTextField jtfInfo;
     private JTextArea jtaLog;
@@ -74,7 +76,6 @@ public class ProgressPane extends PowerPane implements ConfigurablePane, Progres
     private JCheckBox jcAudioDemux;
     private JCheckBox jcHold;
     private Long startTime = null;
-    private LogBuilder logBuilder = new LogBuilder();
     private Frame frame;
     private String frameTitle;
     private long nextPercentOutput = 0;

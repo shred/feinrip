@@ -26,7 +26,6 @@ import java.beans.PropertyChangeEvent;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
@@ -66,7 +65,7 @@ public class ChapterPane extends PowerPane {
     private JScrollPane jScroll;
     private JPanel jpChapters;
     private JCheckBox jcbIgnore;
-    private Map<JTextField, ChapterEditListener> listenerMap = new HashMap<>();
+    private HashMap<JTextField, ChapterEditListener> listenerMap = new HashMap<>();
     private boolean noChapterUpdates;
 
     public ChapterPane(Project project) {
@@ -177,7 +176,7 @@ public class ChapterPane extends PowerPane {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
-            case "chapters":
+            case "chapters": //NOSONAR: falls through
                 if (!noChapterUpdates) {
                     updateChapters();
                 }

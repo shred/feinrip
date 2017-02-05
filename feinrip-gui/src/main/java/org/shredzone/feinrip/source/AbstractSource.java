@@ -72,11 +72,11 @@ public abstract class AbstractSource implements Source {
 
         TvdbEpisode episode = project.getEpisode();
         if (episode != null) {
-            result = result.replace("%ss", String.format("%02d", episode.season));
-            result = result.replace("%s", String.valueOf(episode.season));
-            result = result.replace("%ee", String.format("%02d", episode.episode));
-            result = result.replace("%et", episode.title);
-            result = result.replace("%e", String.valueOf(episode.episode));
+            result = result.replace("%ss", String.format("%02d", episode.getSeason()));
+            result = result.replace("%s", String.valueOf(episode.getSeason()));
+            result = result.replace("%ee", String.format("%02d", episode.getEpisode()));
+            result = result.replace("%et", episode.getTitle());
+            result = result.replace("%e", String.valueOf(episode.getEpisode()));
 
         } else {
             result = result.replace("%ss", "");

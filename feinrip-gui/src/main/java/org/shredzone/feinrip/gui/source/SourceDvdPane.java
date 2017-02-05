@@ -303,18 +303,19 @@ public class SourceDvdPane extends SourceSelectorPane implements ConfigurablePan
 
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            if (value != null && value instanceof MountPoint) {
-                MountPoint mp = (MountPoint) value;
+            Object renderValue = value;
+            if (renderValue != null && renderValue instanceof MountPoint) {
+                MountPoint mp = (MountPoint) renderValue;
 
                 StringBuilder sb = new StringBuilder();
                 sb.append("<html>");
                 sb.append(mp.getMount().getName());
                 sb.append("<br><small>").append(mp.getDevice().getAbsolutePath()).append("</small>");
 
-                value = sb;
+                renderValue = sb;
             }
 
-            JLabel jl = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            JLabel jl = (JLabel) super.getListCellRendererComponent(list, renderValue, index, isSelected, cellHasFocus);
             jl.setIcon(selectIcon);
             return jl;
         }

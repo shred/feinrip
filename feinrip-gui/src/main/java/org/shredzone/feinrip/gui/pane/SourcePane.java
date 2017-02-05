@@ -25,7 +25,6 @@ import java.util.ResourceBundle;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -48,12 +47,12 @@ public class SourcePane extends PowerPane implements ConfigurablePane {
     private static final long serialVersionUID = -3519322844850173205L;
 
     private static final ResourceBundle B = ResourceBundle.getBundle("message");
-    private static final Icon dvdIcon = new ImageIcon(SourcePane.class.getResource("/org/shredzone/feinrip/icon/large-dvd.png"));
-    private static final Icon dvdIconSmall = new ImageIcon(SourcePane.class.getResource("/org/shredzone/feinrip/icon/small-dvd.png"));
-    private static final Icon isoIcon = new ImageIcon(SourcePane.class.getResource("/org/shredzone/feinrip/icon/large-iso.png"));
-    private static final Icon isoIconSmall = new ImageIcon(SourcePane.class.getResource("/org/shredzone/feinrip/icon/small-iso.png"));
-    private static final Icon vobIcon = new ImageIcon(SourcePane.class.getResource("/org/shredzone/feinrip/icon/large-vob.png"));
-    private static final Icon vobIconSmall = new ImageIcon(SourcePane.class.getResource("/org/shredzone/feinrip/icon/small-vob.png"));
+    private static final ImageIcon dvdIcon = new ImageIcon(SourcePane.class.getResource("/org/shredzone/feinrip/icon/large-dvd.png"));
+    private static final ImageIcon dvdIconSmall = new ImageIcon(SourcePane.class.getResource("/org/shredzone/feinrip/icon/small-dvd.png"));
+    private static final ImageIcon isoIcon = new ImageIcon(SourcePane.class.getResource("/org/shredzone/feinrip/icon/large-iso.png"));
+    private static final ImageIcon isoIconSmall = new ImageIcon(SourcePane.class.getResource("/org/shredzone/feinrip/icon/small-iso.png"));
+    private static final ImageIcon vobIcon = new ImageIcon(SourcePane.class.getResource("/org/shredzone/feinrip/icon/large-vob.png"));
+    private static final ImageIcon vobIconSmall = new ImageIcon(SourcePane.class.getResource("/org/shredzone/feinrip/icon/small-vob.png"));
 
     private ButtonGroup sourceGroup;
     private JToggleButton jtbDvdSource;

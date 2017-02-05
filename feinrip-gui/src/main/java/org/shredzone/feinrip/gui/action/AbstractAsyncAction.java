@@ -85,7 +85,7 @@ public abstract class AbstractAsyncAction extends AbstractSyncAction {
             @Override
             protected void onAction() {
                 AbstractAsyncAction.this.onAction(e);
-            };
+            }
 
             @Override
             protected void postAction() {

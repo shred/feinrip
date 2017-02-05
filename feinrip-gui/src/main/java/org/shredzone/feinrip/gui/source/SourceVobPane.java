@@ -63,7 +63,6 @@ public class SourceVobPane extends SourceSelectorPane {
     private static final String KEY = "lastPath";
 
     private final Preferences prefs = Preferences.userNodeForPackage(SourceVobPane.class);
-
     private final VobSource source = new VobSource();
 
     private JTextField jtfFile;

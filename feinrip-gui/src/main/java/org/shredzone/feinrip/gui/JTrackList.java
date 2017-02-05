@@ -101,7 +101,7 @@ public class JTrackList extends JList<Track> implements ListSelectionListener, P
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         switch (evt.getPropertyName()) {
-            case "source.device":
+            case "source.device": //NOSONAR: falls through
                 setModel(new TrackListModel(tracks));
                 // falls through...
 
@@ -155,10 +155,11 @@ public class JTrackList extends JList<Track> implements ListSelectionListener, P
 
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            if (value != null && value instanceof Track) {
-                Track track = (Track) value;
+            Object renderValue = value;
+            if (renderValue != null && renderValue instanceof Track) {
+                Track track = (Track) renderValue;
 
-                value = MessageFormat.format(B.getString("track.list"),
+                renderValue = MessageFormat.format(B.getString("track.list"),
                                 track.getTrack(),
                                 track.getLength(),
                                 String.valueOf(track.getDimension().width) + 'x' + String.valueOf(track.getDimension().height),
@@ -168,7 +169,7 @@ public class JTrackList extends JList<Track> implements ListSelectionListener, P
                 );
             }
 
-            return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            return super.getListCellRendererComponent(list, renderValue, index, isSelected, cellHasFocus);
         }
     }
 

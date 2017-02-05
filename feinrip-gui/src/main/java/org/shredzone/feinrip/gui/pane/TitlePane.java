@@ -63,7 +63,7 @@ public class TitlePane extends PowerPane implements ConfigurablePane, ListSelect
 
     private static final ResourceBundle B = ResourceBundle.getBundle("message");
 
-    private Configuration config = Configuration.global();
+    private final Configuration config = Configuration.global();
 
     private JTextField jtfTitle;
     private JEpisodeList jlEpisodes;
@@ -200,8 +200,8 @@ public class TitlePane extends PowerPane implements ConfigurablePane, ListSelect
         TvdbEpisode episode = project.getEpisode();
         if (episode != null) {
             sb.append("<br>");
-            sb.append(String.format("%d-%02d", episode.season, episode.episode));
-            sb.append(": ").append(escape(episode.title));
+            sb.append(String.format("%d-%02d", episode.getSeason(), episode.getEpisode()));
+            sb.append(": ").append(escape(episode.getTitle()));
         }
 
         getPowerTabModel().setBody(sb.toString());

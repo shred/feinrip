@@ -70,10 +70,22 @@ public class TvdbService {
      * @author Richard "Shred" Körber
      */
     public static class TvdbSeries {
-        public long id;
-        public String title;
-        public String language;
-        public String aired;
+        private long id;
+        private String title;
+        private String language;
+        private String aired;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getLanguage() {
+            return language;
+        }
+
+        public String getAired() {
+            return aired;
+        }
 
         @Override
         public String toString() {
@@ -87,10 +99,22 @@ public class TvdbService {
      * @author Richard "Shred" Körber
      */
     public static class TvdbEpisode {
-        public long id;
-        public int season;
-        public int episode;
-        public String title;
+        private long id;
+        private int season;
+        private int episode;
+        private String title;
+
+        public int getSeason() {
+            return season;
+        }
+
+        public int getEpisode() {
+            return episode;
+        }
+
+        public String getTitle() {
+            return title;
+        }
 
         public String toKey() {
             return String.valueOf(season) + '-' + String.valueOf(episode);

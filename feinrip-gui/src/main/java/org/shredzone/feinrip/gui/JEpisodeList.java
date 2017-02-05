@@ -52,11 +52,12 @@ public class JEpisodeList extends JList<TvdbEpisode> {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            if (value instanceof TvdbEpisode) {
-                TvdbEpisode episode = (TvdbEpisode) value;
-                value = String.format("%d-%02d - %s", episode.season, episode.episode, episode.title);
+            Object renderValue = value;
+            if (renderValue instanceof TvdbEpisode) {
+                TvdbEpisode episode = (TvdbEpisode) renderValue;
+                renderValue = String.format("%d-%02d - %s", episode.getSeason(), episode.getEpisode(), episode.getTitle());
             }
-            return delegate.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            return delegate.getListCellRendererComponent(list, renderValue, index, isSelected, cellHasFocus);
         }
     }
 

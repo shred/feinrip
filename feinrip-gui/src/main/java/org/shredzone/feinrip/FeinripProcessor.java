@@ -108,7 +108,9 @@ public class FeinripProcessor {
                     audioFiles.add(resultFile);
                     encoder.mapAudioFile(audio, resultFile);
                 } finally {
-                    audioFile.delete();
+                    if (!audioFile.delete()) {
+                        throw new IOException("Could not delete " + audioFile.getAbsolutePath());
+                    }
                 }
             }
 
@@ -129,7 +131,9 @@ public class FeinripProcessor {
             source.deleteVobFile(vobFile);
 
             if (chapFile != null) {
-                chapFile.delete();
+                if (!chapFile.delete()) {
+                    throw new IOException("Could not delete " + chapFile.getAbsolutePath());
+                }
             }
 
             for (File file : vobsubFiles.values()) {
@@ -137,7 +141,9 @@ public class FeinripProcessor {
             }
 
             for (File file : audioFiles) {
-                file.delete();
+                if (!file.delete()) {
+                    throw new IOException("Could not delete " + file.getAbsolutePath());
+                }
             }
 
             source.deleteEitFile(eitFile);

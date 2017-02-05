@@ -24,7 +24,6 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashSet;
-import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -44,7 +43,7 @@ public class PowerTabRenderer extends JPanel implements PropertyChangeListener {
     private PowerTabBorder border;
     private JLabel jlTitle;
     private JLabel jlBody;
-    private Set<ActionListener> listener = new HashSet<>();
+    private HashSet<ActionListener> listener = new HashSet<>();
 
     /**
      * Creates a new {@link PowerTabRenderer}.

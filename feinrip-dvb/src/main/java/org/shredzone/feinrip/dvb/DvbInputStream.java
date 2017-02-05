@@ -15,7 +15,10 @@
  */
 package org.shredzone.feinrip.dvb;
 
+import static java.lang.Math.*;
+
 import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -76,6 +79,22 @@ public class DvbInputStream extends DataInputStream {
     }
 
     /**
+     * Reads the exact number of bytes into a byte array.
+     *
+     * @param length
+     *            Number of bytes to read
+     * @return Byte array containing the bytes
+     */
+    public byte[] readFixed(int length) throws IOException {
+        byte[] data = new byte[length];
+        int bytesRead = read(data);
+        if (bytesRead != length) {
+            throw new EOFException();
+        }
+        return data;
+    }
+
+    /**
      * Reads an encoded string of the given length. The string is properly
      * charset decoded.
      *
@@ -88,8 +107,7 @@ public class DvbInputStream extends DataInputStream {
             return "";
         }
 
-        byte[] data = new byte[length];
-        read(data);
+        byte[] data = readFixed(length);
 
         if (data[0] >= 0x20) {
             // Default latin encoding
@@ -123,8 +141,7 @@ public class DvbInputStream extends DataInputStream {
      * @return Language code (ISO 639-3)
      */
     public String readLanguageCode() throws IOException {
-        byte[] lc = new byte[3];
-        read(lc);
+        byte[] lc = readFixed(3);
         return new String(lc, ISO_8859_1);
     }
 
@@ -136,18 +153,18 @@ public class DvbInputStream extends DataInputStream {
      * @return Date and time that was read
      */
     public Date readDateTime() throws IOException {
-        double mjd = readUnsignedShort();
+        int mjd = readUnsignedShort();
         int hour = readBCD();
         int minute = readBCD();
         int second = readBCD();
 
         // This is really insane! What have you smoked, guys?
-        double y1 = Math.floor((mjd - 15078.2) / 365.25);
-        double m1 = Math.floor((mjd - 14956.1 - Math.floor(y1 * 365.25)) / 30.6001);
-        double d = mjd - 14956 - Math.floor(y1 * 365.25) - Math.floor(m1 * 30.6001);
-        double k = (m1 == 14 || m1 == 15) ? 1 : 0;
-        double y = y1 + k;
-        double m = m1 - 1 - k * 12;
+        long y1 = round(floor((mjd - 15078.2) / 365.25));
+        long m1 = round(floor((mjd - 14956.1 - floor(y1 * 365.25)) / 30.6001));
+        long d = round(mjd - 14956 - floor(y1 * 365.25) - floor(m1 * 30.6001));
+        long k = (m1 == 14 || m1 == 15) ? 1 : 0;
+        long y = y1 + k;
+        long m = m1 - 1 - k * 12;
 
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         cal.clear();

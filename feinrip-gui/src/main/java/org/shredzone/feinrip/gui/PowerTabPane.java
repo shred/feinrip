@@ -21,7 +21,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -47,8 +46,8 @@ public class PowerTabPane extends JPanel {
     private JPanel centerPane;
     private JPanel listPane;
     private JPanel actionPane;
-    private Map<String, PowerTabModel> modelMap = new HashMap<>();
-    private Map<PowerTabRenderer, String> rendererMap = new HashMap<>();
+    private HashMap<String, PowerTabModel> modelMap = new HashMap<>();
+    private HashMap<PowerTabRenderer, String> rendererMap = new HashMap<>();
 
     /**
      * Creates a new, empty {@link PowerTabPane}.

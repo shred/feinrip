@@ -250,14 +250,12 @@ public class StreamUtils {
 
     /**
      * A helper class that collects the analyzed data.
-     *
-     * @author Richard "Shred" Körber
      */
     private static class AnalyzerCollector implements Consumer<String> {
-        public String ffStreamId;
-        public String suffix;
-        public String acodec = "copy";
-        public Long duration = null;
+        private String ffStreamId;
+        private String suffix;
+        private String acodec = "copy";
+        private Long duration = null;
 
         private static final Pattern DURATION = Pattern.compile(".*?Duration: (\\d\\d):(\\d\\d):(\\d\\d)\\.(\\d\\d).*");
         private final Pattern streamPattern;

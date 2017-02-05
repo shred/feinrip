@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  */
 public class LsdvdLogger extends Logger {
 
-    public static String DEBUG_PROPERTY_NAME = "feinrip.debug";
+    public static final String DEBUG_PROPERTY_NAME = "feinrip.debug";
 
     /**
      * Creates a new logger.

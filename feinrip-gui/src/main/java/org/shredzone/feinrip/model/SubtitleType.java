@@ -40,6 +40,6 @@ public enum SubtitleType {
     @Override
     public String toString() {
         return B.getString("subtype." + name().toLowerCase());
-    };
+    }
 
 }

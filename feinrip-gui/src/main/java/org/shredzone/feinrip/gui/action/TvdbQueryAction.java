@@ -128,8 +128,8 @@ public class TvdbQueryAction extends AbstractAsyncAction implements PropertyChan
         if (selection != null) {
             // Change the title
             StringBuilder sb = new StringBuilder();
-            sb.append(selection.title).append(" (");
-            sb.append(selection.aired.substring(0, 4));
+            sb.append(selection.getTitle()).append(" (");
+            sb.append(selection.getAired().substring(0, 4));
             sb.append(")");
             project.setTitle(sb.toString());
 

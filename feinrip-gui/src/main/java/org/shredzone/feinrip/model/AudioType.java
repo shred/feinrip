@@ -34,6 +34,6 @@ public enum AudioType {
     @Override
     public String toString() {
         return B.getString("audiotype." + name().toLowerCase());
-    };
+    }
 
 }

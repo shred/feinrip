@@ -19,7 +19,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.JPanel;
 
@@ -35,7 +34,7 @@ import javax.swing.JPanel;
 public class BorderAndFlowPanel extends JPanel {
     private static final long serialVersionUID = 8292863708014614152L;
 
-    private final Map<Object, JPanel> panelMap = new HashMap<>();
+    private final HashMap<Object, JPanel> panelMap = new HashMap<>();
 
     public BorderAndFlowPanel() {
         super(new BorderLayout());

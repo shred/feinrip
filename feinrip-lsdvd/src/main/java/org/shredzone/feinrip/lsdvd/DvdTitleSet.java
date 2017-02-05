@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
  */
 public class DvdTitleSet {
 
-    public enum Format { NTSC, PAL };
-    public enum Aspect { ASPECT_4_3, ASPECT_16_9 };
+    public enum Format { NTSC, PAL }
+    public enum Aspect { ASPECT_4_3, ASPECT_16_9 }
 
     private final List<DvdAudioAttributes> audioAttrs = new ArrayList<>();
     private final List<DvdSubtitleAttributes> subAttrs = new ArrayList<>();

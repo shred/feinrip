@@ -36,7 +36,7 @@ public class DvdAudioAttributes {
         }
     }
 
-    public enum Type { NORMAL, VISUALLY_IMPAIRED, DIRECTORS_COMMENT, ALTERNATE };
+    public enum Type { NORMAL, VISUALLY_IMPAIRED, DIRECTORS_COMMENT, ALTERNATE }
 
     private Mode mode;
     private int channels;

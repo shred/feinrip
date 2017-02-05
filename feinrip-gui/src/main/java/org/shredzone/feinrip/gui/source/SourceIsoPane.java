@@ -53,7 +53,6 @@ public class SourceIsoPane extends SourceSelectorPane {
     private static final String KEY = "lastIsoDir";
 
     private final Preferences prefs = Preferences.userNodeForPackage(SourceIsoPane.class);
-
     private final IsoSource source = new IsoSource();
 
     private JTextField jtfDir;

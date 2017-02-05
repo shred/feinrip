@@ -48,7 +48,7 @@ public class EitFileDecoder {
             EventInformation ei = new EventInformation();
             ei.read(in);
 
-            String details = "";
+            StringBuilder details = new StringBuilder();
 
             for (Descriptor d : ei.getDescriptors()) {
                 if (d instanceof ShortEventDescriptor) {
@@ -56,7 +56,7 @@ public class EitFileDecoder {
                     System.out.println("         " + ((ShortEventDescriptor) d).getText());
                 }
                 if (d instanceof ExtendedEventDescriptor) {
-                    details += ((ExtendedEventDescriptor) d).getText();
+                    details.append(((ExtendedEventDescriptor) d).getText());
                 }
                 if (d instanceof ContentDescriptor) {
                     // TODO
@@ -66,7 +66,7 @@ public class EitFileDecoder {
             System.out.println("Date:    " + formatter.format(ei.getStartTime()));
             System.out.println("Runtime: " + ei.getDuration() / 60 + " min");
 
-            if (!details.isEmpty()) {
+            if (details.length() > 0) {
                 System.out.println();
                 System.out.println(details);
             }

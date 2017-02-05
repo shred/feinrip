@@ -57,7 +57,7 @@ public class Project {
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
             support.firePropertyChange(evt);
-        };
+        }
     };
 
     /**
