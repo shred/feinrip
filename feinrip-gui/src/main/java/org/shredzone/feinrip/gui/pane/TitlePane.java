@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -129,12 +130,12 @@ public class TitlePane extends PowerPane implements ConfigurablePane, ListSelect
     }
 
     @Override
-    public Component getConfigurationPane() {
+    public Component getConfigurationPane(AtomicReference<JLabelGroup> lgRef) {
         JPanel jpConfig = new JPanel();
         jpConfig.setLayout(new BoxLayout(jpConfig,  BoxLayout.Y_AXIS));
         jpConfig.setBorder(BorderFactory.createTitledBorder(B.getString("pane.title.settings")));
         {
-            JLabelGroup lg = null;
+            JLabelGroup lg = lgRef.get();
 
             JPanel jpImdbUrl = new BorderAndFlowPanel();
             {
@@ -172,7 +173,7 @@ public class TitlePane extends PowerPane implements ConfigurablePane, ListSelect
             jcbTvdbAired.addChangeListener(e -> config.setTvdbAired(jcbTvdbAired.isSelected()));
             jpConfig.add(lg = new JLabelGroup(jcbTvdbAired, "", lg));
 
-            lg.rearrange();
+            lgRef.set(lg);
         }
 
         JLabelGroup.setMinimumHeight(jpConfig);

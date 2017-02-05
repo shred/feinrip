@@ -23,6 +23,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.prefs.Preferences;
 
 import javax.swing.BorderFactory;
@@ -145,19 +146,19 @@ public class SourceDvdPane extends SourceSelectorPane implements ConfigurablePan
     }
 
     @Override
-    public Component getConfigurationPane() {
+    public Component getConfigurationPane(AtomicReference<JLabelGroup> lgRef) {
         JPanel jpConfig = new JPanel();
         jpConfig.setLayout(new BoxLayout(jpConfig,  BoxLayout.Y_AXIS));
         jpConfig.setBorder(BorderFactory.createTitledBorder(B.getString("source.dvd.settings")));
         {
-            JLabelGroup lg = null;
+            JLabelGroup lg = lgRef.get();
 
             jcbRipMode = new JComboBox<>(StreamType.values());
             jcbRipMode.setSelectedItem(source.getStreamType());
             jcbRipMode.addActionListener(this::onRipModeAction);
             jpConfig.add(lg = new JLabelGroup(jcbRipMode, B.getString("source.dvd.stream"), lg));
 
-            lg.rearrange();
+            lgRef.set(lg);
         }
         JLabelGroup.setMinimumHeight(jpConfig);
         return jpConfig;

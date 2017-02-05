@@ -21,6 +21,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -31,6 +32,7 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
 import org.shredzone.feinrip.gui.ConfigurablePane;
+import org.shredzone.feinrip.gui.JLabelGroup;
 import org.shredzone.feinrip.gui.source.SourceDvdPane;
 import org.shredzone.feinrip.gui.source.SourceIsoPane;
 import org.shredzone.feinrip.gui.source.SourceVobPane;
@@ -126,8 +128,8 @@ public class SourcePane extends PowerPane implements ConfigurablePane {
     }
 
     @Override
-    public Component getConfigurationPane() {
-        return sourceDvdPane.getConfigurationPane();
+    public Component getConfigurationPane(AtomicReference<JLabelGroup> lgRef) {
+        return sourceDvdPane.getConfigurationPane(lgRef);
     }
 
     private void updateBody() {

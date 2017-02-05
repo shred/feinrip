@@ -16,10 +16,12 @@
 package org.shredzone.feinrip.gui.pane;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.BoxLayout;
 
 import org.shredzone.feinrip.gui.ConfigurablePane;
+import org.shredzone.feinrip.gui.JLabelGroup;
 import org.shredzone.feinrip.model.Project;
 
 /**
@@ -39,8 +41,8 @@ public class SettingsPane extends PowerPane {
     /**
      * Adds a {@link ConfigurablePane} to the set of configurable panes.
      */
-    public void addConfigurablePane(ConfigurablePane pane) {
-        add(Objects.requireNonNull(pane).getConfigurationPane());
+    public void addConfigurablePane(ConfigurablePane pane, AtomicReference<JLabelGroup> lgRef) {
+        add(Objects.requireNonNull(pane).getConfigurationPane(lgRef));
     }
 
 }

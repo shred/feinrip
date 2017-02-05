@@ -16,6 +16,7 @@
 package org.shredzone.feinrip.gui;
 
 import java.awt.Component;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Marks a pane that provides a configuration pane to be shown in the settings pane.
@@ -26,7 +27,9 @@ public interface ConfigurablePane {
 
     /**
      * Returns a {@link Component} to be used for configuration.
+     *
+     * @param lgRef Reference to a {@link JLabelGroup} for global aligning
      */
-    Component getConfigurationPane();
+    Component getConfigurationPane(AtomicReference<JLabelGroup> lgRef);
 
 }

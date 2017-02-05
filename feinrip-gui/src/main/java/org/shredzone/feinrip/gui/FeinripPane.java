@@ -18,6 +18,7 @@ package org.shredzone.feinrip.gui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -47,6 +48,8 @@ public class FeinripPane extends JPanel {
     private static final long serialVersionUID = 504145006959520172L;
 
     private final Project project = new Project();
+
+    private final AtomicReference<JLabelGroup> lgRef = new AtomicReference<>();
 
     private PowerTabPane jTabs;
     private String oldTab;
@@ -79,6 +82,11 @@ public class FeinripPane extends JPanel {
         jbStart.setHorizontalTextPosition(SwingConstants.LEFT);
         jbStart.setMaximumSize(new Dimension(Integer.MAX_VALUE, jbStart.getMaximumSize().height));
         addActionPlain(jTabs, jbStart);
+
+        JLabelGroup lg = lgRef.get();
+        if (lg != null) {
+            lg.rearrange();
+        }
     }
 
     /**
@@ -104,7 +112,7 @@ public class FeinripPane extends JPanel {
     private void addTab(PowerTabPane tabbedPane, PowerPane pane) {
         tabbedPane.addTab(pane.getPaneName(), pane.getPowerTabModel(), pane);
         if (pane instanceof ConfigurablePane) {
-            settingsPane.addConfigurablePane((ConfigurablePane) pane);
+            settingsPane.addConfigurablePane((ConfigurablePane) pane, lgRef);
         }
     }
 
@@ -115,7 +123,7 @@ public class FeinripPane extends JPanel {
     private void addActionTab(PowerTabPane tabbedPane, PowerPane pane) {
         tabbedPane.addTab(pane.getPaneName(), pane.getPowerTabModel(), pane, true);
         if (pane instanceof ConfigurablePane) {
-            settingsPane.addConfigurablePane((ConfigurablePane) pane);
+            settingsPane.addConfigurablePane((ConfigurablePane) pane, lgRef);
         }
     }
 
@@ -126,7 +134,7 @@ public class FeinripPane extends JPanel {
     private void addStealthTab(PowerTabPane tabbedPane, PowerPane pane) {
         tabbedPane.addStealthTab(pane.getPaneName(), pane);
         if (pane instanceof ConfigurablePane) {
-            settingsPane.addConfigurablePane((ConfigurablePane) pane);
+            settingsPane.addConfigurablePane((ConfigurablePane) pane, lgRef);
         }
     }
 

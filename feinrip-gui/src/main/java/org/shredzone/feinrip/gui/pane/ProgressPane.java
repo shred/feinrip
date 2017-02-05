@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -137,12 +138,12 @@ public class ProgressPane extends PowerPane implements ConfigurablePane, Progres
     }
 
     @Override
-    public Component getConfigurationPane() {
+    public Component getConfigurationPane(AtomicReference<JLabelGroup> lgRef) {
         JPanel jpConfig = new JPanel();
         jpConfig.setLayout(new BoxLayout(jpConfig,  BoxLayout.Y_AXIS));
         jpConfig.setBorder(BorderFactory.createTitledBorder(B.getString("pane.progress.settings")));
         {
-            JLabelGroup lg = null;
+            JLabelGroup lg = lgRef.get();
 
             JPanel jpTempDir = new BorderAndFlowPanel();
             {
@@ -180,7 +181,7 @@ public class ProgressPane extends PowerPane implements ConfigurablePane, Progres
             jcHold.addActionListener(this::onHoldAction);
             jpConfig.add(lg = new JLabelGroup(jcHold, "", lg));
 
-            lg.rearrange();
+            lgRef.set(lg);
         }
 
         JLabelGroup.setMinimumHeight(jpConfig);
