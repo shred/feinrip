@@ -15,22 +15,18 @@
  */
 package org.shredzone.feinrip.gui.action;
 
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ResourceBundle;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 
 import org.shredzone.feinrip.FeinripProcessor;
 import org.shredzone.feinrip.gui.ErrorDialog;
 import org.shredzone.feinrip.gui.FeinripPane;
 import org.shredzone.feinrip.gui.pane.ProgressPane;
-import org.shredzone.feinrip.model.Configuration;
 import org.shredzone.feinrip.model.Project;
 import org.shredzone.feinrip.source.Source;
 
@@ -39,13 +35,12 @@ import org.shredzone.feinrip.source.Source;
  *
  * @author Richard "Shred" Körber
  */
-public class StartAction extends AbstractAsyncAction implements PropertyChangeListener, Runnable {
+public class StartAction extends AbstractAsyncAction implements PropertyChangeListener {
     private static final long serialVersionUID = 7368475121002513675L;
 
     private static final ResourceBundle B = ResourceBundle.getBundle("message");
     private static final Icon playIcon = new ImageIcon(StartAction.class.getResource("/org/shredzone/feinrip/icon/play.png"));
 
-    private final Configuration config = Configuration.global();
     private final Project project;
     private final FeinripPane master;
     private final ProgressPane progress;
@@ -99,7 +94,6 @@ public class StartAction extends AbstractAsyncAction implements PropertyChangeLi
     public void onAction(ActionEvent e) {
         try {
             FeinripProcessor processor = new FeinripProcessor(project);
-            processor.setPreMuxHook(this);
             processor.setProgressMeter(progress);
             processor.start();
         } catch (Exception ex) {
@@ -117,33 +111,6 @@ public class StartAction extends AbstractAsyncAction implements PropertyChangeLi
 
         if (project.getSource().isVobFileCorrupted()) {
             ErrorDialog.showError("action.start.msgtitle", "action.start.corrupted");
-        }
-    }
-
-    /**
-     * Invoked just before muxing the mkv file. Note that this is not executed in the
-     * Swing GUI thread!
-     */
-    @Override
-    public void run() {
-        if (config.isHoldBeforeMuxing()) {
-            try {
-                EventQueue.invokeAndWait(() -> {
-                    int result = JOptionPane.showConfirmDialog(
-                            master,
-                            B.getString("action.start.hold.dialog"),
-                            B.getString("action.start.hold.title"),
-                            JOptionPane.OK_CANCEL_OPTION,
-                            JOptionPane.INFORMATION_MESSAGE
-                    );
-
-                    if (result != JOptionPane.OK_OPTION) {
-                        throw new RuntimeException("Cancelled on user request");
-                    }
-                });
-            } catch (InvocationTargetException|InterruptedException ex) {
-                throw new RuntimeException("Muxing was aborted!", ex);
-            }
         }
     }
 

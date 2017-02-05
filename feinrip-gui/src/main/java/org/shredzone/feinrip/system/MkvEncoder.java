@@ -22,9 +22,11 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.json.JSONObject;
 import org.shredzone.feinrip.model.Audio;
 import org.shredzone.feinrip.model.Project;
 import org.shredzone.feinrip.progress.LogConsumer;
@@ -252,6 +254,24 @@ public class MkvEncoder {
 
         mergeCmd.failedIf(rc -> rc > 1);
         mergeCmd.execute();
+    }
+
+    /**
+     * Returns a JSON string of the current configuration of files and streams.
+     */
+    public String getJsonProcessData() {
+        JSONObject json = new JSONObject();
+        json.put("title", project.getTitle());
+        json.put("source", vobFile);
+        json.put("chapterFile", chapFile);
+        json.put("eitFile", eitFile);
+        json.put("vobsubFiles", vobsubFiles);
+
+        Map<Integer, File> audi = new TreeMap<>();
+        audioMap.forEach((a, ea) -> audi.put(a.getStreamId(), ea.file));
+        json.put("audioFiles", audi);
+
+        return json.toString();
     }
 
     private static class ExtAudio {

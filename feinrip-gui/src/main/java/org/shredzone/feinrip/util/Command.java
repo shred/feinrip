@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,7 @@ public class Command {
     private IOStream outConsumer = stream -> stream.count();
     private IOStream errConsumer = stream -> stream.count();
     private Predicate<Integer> hasFailed = rc -> rc != 0;
+    private byte[] inputData = null;
 
     /**
      * Create a new command.
@@ -71,6 +73,27 @@ public class Command {
                 command.add(p.toString());
             }
         }
+        return this;
+    }
+
+    /**
+     * Sets input data.
+     *
+     * @param data
+     *            Input data to be sent to the process
+     */
+    public Command input(String data) {
+        return input(data.getBytes());
+    }
+
+    /**
+     * Sets input data.
+     *
+     * @param data
+     *            Input data to be sent to the process
+     */
+    public Command input(byte[] data) {
+        this.inputData = data;
         return this;
     }
 
@@ -148,6 +171,7 @@ public class Command {
      *             when the command failed to execute successfully
      */
     public void execute() throws IOException {
+        StreamSpiller inSpiller = null;
         StreamGobbler outGobbler = null;
         StreamGobbler errGobbler = null;
 
@@ -157,6 +181,11 @@ public class Command {
 
         builder.command(command);
         Process p = builder.start();
+
+        if (inputData != null) {
+            inSpiller = new StreamSpiller(p.getOutputStream(), inputData);
+            inSpiller.start();
+        }
 
         if (outConsumer != null) {
             outGobbler = new StreamGobbler(p.getInputStream(), outConsumer);
@@ -170,6 +199,9 @@ public class Command {
 
         try {
             rc = p.waitFor();
+            if (inSpiller != null) {
+                inSpiller.join(1000L);
+            }
             if (outGobbler != null) {
                 outGobbler.join();
             }
@@ -184,6 +216,28 @@ public class Command {
         if (hasFailed.test(rc)) {
             throw new IOException("command " + cmdName.getName()
                 + " failed, returning error code " + rc);
+        }
+    }
+
+    /**
+     * A {@link Thread} that writes to the {@link OutputStream}.
+     */
+    private static class StreamSpiller extends Thread {
+        private final OutputStream out;
+        private final byte[] data;
+
+        public StreamSpiller(OutputStream out, byte[] data) {
+            this.out = out;
+            this.data = data;
+        }
+
+        @Override
+        public void run() {
+            try (OutputStream o = out) { // auto-close after write
+                o.write(data);
+            } catch (IOException ex) {
+                throw new RuntimeException("Failed writing stream", ex);
+            }
         }
     }
 

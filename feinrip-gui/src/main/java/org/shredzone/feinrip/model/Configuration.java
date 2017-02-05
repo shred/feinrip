@@ -26,7 +26,8 @@ public class Configuration {
     private static final Configuration INSTANCE = new Configuration();
     private static final String SOUNDFILE_KEY = "soundFile";
     private static final String FORCEAUDIODEMUX_KEY = "forceAudioDemux";
-    private static final String MUXERHOLD_KEY = "muxerHold";
+    private static final String PREPROCESS_KEY = "muxerPreprocess";
+    private static final String PREPROCESS_SCRIPT_KEY = "muxerPreprocessScript";
     private static final String DVD_STREAMTYPE_KEY = "dvdStreamType";
     private static final String TEMP_DIR = "tempDir";
     private static final String IMDB_URL = "imdbUrl";
@@ -81,17 +82,35 @@ public class Configuration {
     }
 
     /**
-     * Sets if waiting for user before muxing.
+     * Sets if invoking an external preprocessor tool before muxing.
      */
-    public void setHoldBeforeMuxing(boolean mode) {
-        prefs.putBoolean(MUXERHOLD_KEY, mode);
+    public void setPreprocessBeforeMuxing(boolean mode) {
+        prefs.putBoolean(PREPROCESS_KEY, mode);
     }
 
     /**
-     * Gets if waiting for user before muxing.
+     * Gets if invoking an external preprocessor tool before muxing.
      */
-    public boolean isHoldBeforeMuxing() {
-        return prefs.getBoolean(MUXERHOLD_KEY, false);
+    public boolean isPreprocessBeforeMuxing() {
+        return prefs.getBoolean(PREPROCESS_KEY, false);
+    }
+
+    /**
+     * Sets the path to the preprocessor script.
+     */
+    public void setPreprocessScriptFile(String filename) {
+        if (filename == null || filename.isEmpty()) {
+            prefs.remove(PREPROCESS_SCRIPT_KEY);
+        } else {
+            prefs.put(PREPROCESS_SCRIPT_KEY, filename);
+        }
+    }
+
+    /**
+     * Gets the path to the preprocessor script.
+     */
+    public String getPreprocessScriptFile() {
+        return prefs.get(PREPROCESS_SCRIPT_KEY, null);
     }
 
     /**

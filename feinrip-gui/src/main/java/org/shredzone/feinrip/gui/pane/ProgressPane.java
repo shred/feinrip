@@ -74,8 +74,9 @@ public class ProgressPane extends PowerPane implements ConfigurablePane, Progres
     private JTextArea jtaLog;
     private JTextField jtfMp3File;
     private JTextField jtfTempDir;
+    private JTextField jtfPreprocessorFile;
     private JCheckBox jcAudioDemux;
-    private JCheckBox jcHold;
+    private JCheckBox jcPreprocess;
     private Long startTime = null;
     private Frame frame;
     private String frameTitle;
@@ -176,10 +177,22 @@ public class ProgressPane extends PowerPane implements ConfigurablePane, Progres
             jcAudioDemux.addActionListener(this::onAudioDemuxAction);
             jpConfig.add(lg = new JLabelGroup(jcAudioDemux, "", lg));
 
-            jcHold = new JCheckBox(B.getString("pane.progress.hold"));
-            jcHold.setSelected(config.isHoldBeforeMuxing());
-            jcHold.addActionListener(this::onHoldAction);
-            jpConfig.add(lg = new JLabelGroup(jcHold, "", lg));
+            jcPreprocess = new JCheckBox(B.getString("pane.progress.preprocess"));
+            jcPreprocess.setSelected(config.isPreprocessBeforeMuxing());
+            jcPreprocess.addActionListener(this::onPreprocessAction);
+            jpConfig.add(lg = new JLabelGroup(jcPreprocess, "", lg));
+
+            JPanel jpPreprocessorFile = new BorderAndFlowPanel();
+            {
+                jtfPreprocessorFile = new JTextField(config.getPreprocessScriptFile());
+                jtfPreprocessorFile.setToolTipText(B.getString("pane.progress.preprocessor.tt"));
+                jpPreprocessorFile.add(jtfPreprocessorFile, BorderLayout.CENTER);
+
+                JButton jbPreprocessorSelect = new JButton(new ScriptSelectAction());
+                jbPreprocessorSelect.setText("");
+                jpPreprocessorFile.add(jbPreprocessorSelect, BorderLayout.LINE_END);
+            }
+            jpConfig.add(lg = new JLabelGroup(jpPreprocessorFile, B.getString("pane.progress.preprocessor"), lg));
 
             lgRef.set(lg);
         }
@@ -192,8 +205,8 @@ public class ProgressPane extends PowerPane implements ConfigurablePane, Progres
         config.setForceAudioDemux(jcAudioDemux.isSelected());
     }
 
-    private void onHoldAction(ActionEvent e) {
-        config.setHoldBeforeMuxing(jcHold.isSelected());
+    private void onPreprocessAction(ActionEvent e) {
+        config.setPreprocessBeforeMuxing(jcPreprocess.isSelected());
     }
 
     private void selectTempDir(File dir) {
@@ -206,6 +219,12 @@ public class ProgressPane extends PowerPane implements ConfigurablePane, Progres
         String filename = (file != null ? file.getAbsolutePath() : null);
         jtfMp3File.setText(filename);
         config.setSoundFile(filename);
+    }
+
+    private void selectScriptFile(File file) {
+        String filename = (file != null ? file.getAbsolutePath() : null);
+        jtfPreprocessorFile.setText(filename);
+        config.setPreprocessScriptFile(filename);
     }
 
     /**
@@ -358,6 +377,36 @@ public class ProgressPane extends PowerPane implements ConfigurablePane, Progres
             int result = jfc.showOpenDialog(ProgressPane.this);
             if (result == JFileChooser.APPROVE_OPTION) {
                 selectMp3File(jfc.getSelectedFile());
+            }
+        }
+    }
+
+    /**
+     * Action for selecting a script file.
+     */
+    private class ScriptSelectAction extends AbstractSyncAction {
+        private static final long serialVersionUID = -1136470081289808134L;
+
+        public ScriptSelectAction() {
+            super(B.getString("pane.progress.script.title"), selectFileIcon);
+        }
+
+        @Override
+        public void onAction(ActionEvent e) {
+            File currentDir = null;
+            String filePath = config.getPreprocessScriptFile();
+            if (filePath != null) {
+                currentDir = new File(filePath).getParentFile();
+            }
+
+            JFileChooser jfc = new JFileChooser();
+            jfc.setDialogTitle(B.getString("pane.progress.script.dialog"));
+            jfc.setDialogType(JFileChooser.OPEN_DIALOG);
+            jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            jfc.setCurrentDirectory(currentDir);
+            int result = jfc.showOpenDialog(ProgressPane.this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                selectScriptFile(jfc.getSelectedFile());
             }
         }
     }

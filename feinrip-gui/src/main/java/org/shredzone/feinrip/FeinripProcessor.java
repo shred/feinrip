@@ -32,6 +32,7 @@ import org.shredzone.feinrip.progress.ProgressMeter;
 import org.shredzone.feinrip.source.Source;
 import org.shredzone.feinrip.system.ChapterUtils;
 import org.shredzone.feinrip.system.MkvEncoder;
+import org.shredzone.feinrip.system.PreprocessorInvoker;
 import org.shredzone.feinrip.system.StreamUtils;
 
 /**
@@ -50,17 +51,12 @@ public class FeinripProcessor {
     private File eitFile;
     private Map<Integer, File> vobsubFiles = new HashMap<>();
     private List<File> audioFiles = new ArrayList<>();
-    private Runnable preMuxHook;
 
     /**
      * Creates a new {@link FeinripProcessor}.
      */
     public FeinripProcessor(Project project) {
         this.project = project;
-    }
-
-    public void setPreMuxHook(Runnable preMuxHook) {
-        this.preMuxHook = preMuxHook;
     }
 
     public void setProgressMeter(ProgressMeter progressMeter) {
@@ -114,8 +110,15 @@ public class FeinripProcessor {
                 }
             }
 
-            if (preMuxHook != null) {
-                preMuxHook.run();
+            if (config.isPreprocessBeforeMuxing() && config.getPreprocessScriptFile() != null) {
+                if (progressMeter != null) {
+                    progressMeter.message(B.getString("progress.preprocess"), config.getPreprocessScriptFile()).percent(null);
+                }
+
+                PreprocessorInvoker preproc = new PreprocessorInvoker(new File(config.getPreprocessScriptFile()));
+                preproc.setVobFile(vobFile);
+                preproc.setJsonProcessData(encoder.getJsonProcessData());
+                preproc.invoke(progressMeter);
             }
 
             if (progressMeter != null) {
