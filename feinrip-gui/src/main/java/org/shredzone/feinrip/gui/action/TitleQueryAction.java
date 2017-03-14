@@ -97,7 +97,7 @@ public class TitleQueryAction extends AbstractAsyncAction implements PropertyCha
         try {
             options = searchTitles(title);
         } catch (IOException ex) {
-            // Swallow the exception and return no result
+            ErrorDialog.showException(ex);
             options = Collections.emptyList();
         }
     }

@@ -86,7 +86,7 @@ public class TvdbQueryAction extends AbstractAsyncAction implements PropertyChan
         try {
             series = TvdbService.instance().findSeries(project.getTitle().trim());
         } catch (IOException ex) {
-            // Silently ignore the exception and return an empty list
+            ErrorDialog.showException(ex);
             series = Collections.emptyList();
         }
     }
@@ -147,6 +147,7 @@ public class TvdbQueryAction extends AbstractAsyncAction implements PropertyChan
                     try {
                         episodes = TvdbService.instance().findEpisodes(selection);
                     } catch (IOException ex) {
+                        ErrorDialog.showException(ex);
                         episodes = Collections.emptyList();
                     }
                 }
