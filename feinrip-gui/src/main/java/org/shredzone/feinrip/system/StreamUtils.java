@@ -19,6 +19,7 @@ import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,6 +27,7 @@ import org.shredzone.feinrip.model.Audio;
 import org.shredzone.feinrip.model.StreamType;
 import org.shredzone.feinrip.model.Subtitle;
 import org.shredzone.feinrip.progress.FFmpegConsumer;
+import org.shredzone.feinrip.progress.FilteringConsumer;
 import org.shredzone.feinrip.progress.LogConsumer;
 import org.shredzone.feinrip.progress.PercentConsumer;
 import org.shredzone.feinrip.progress.PredicateLogConsumer;
@@ -69,6 +71,9 @@ public class StreamUtils {
             return readStreamTccat(device, track, out, meter);
         }
 
+        // Ignore all lines starting with "dump:" and without percent character
+        Predicate<String> noPercentPredicate = Pattern.compile("^dump\\:[^%]*$").asPredicate().negate();
+
         PredicateLogConsumer logConsumer = new PredicateLogConsumer(meter, true,
             line -> line.contains("stream read error!")
         );
@@ -80,7 +85,7 @@ public class StreamUtils {
         mplayerCmd.param("-dumpstream");
         mplayerCmd.param("-dumpfile", out);
 
-        mplayerCmd.redirectOutput(new PercentConsumer(meter, false));
+        mplayerCmd.redirectOutput(new FilteringConsumer<String>(noPercentPredicate, new PercentConsumer(meter, false)));
         mplayerCmd.redirectError(logConsumer);
 
         mplayerCmd.execute();

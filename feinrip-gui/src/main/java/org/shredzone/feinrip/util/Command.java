@@ -176,7 +176,7 @@ public class Command {
         StreamGobbler errGobbler = null;
 
         System.out.print(command.get(0));
-        command.stream().skip(1).forEach(it -> System.out.print(" '" + it + "'"));
+        command.stream().skip(1).map(it -> " '" + it + "'").forEach(System.out::print);
         System.out.println();
 
         builder.command(command);
