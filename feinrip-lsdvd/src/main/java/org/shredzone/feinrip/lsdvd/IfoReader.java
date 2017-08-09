@@ -81,7 +81,7 @@ public class IfoReader {
         try {
             LOG.info("Reading IFO from mount %s", dvdDir);
             readVmgFile(dvdDir, "VIDEO_TS/VIDEO_TS.IFO");
-        } catch (IfoException | EOFException ex) {
+        } catch (IOException ex) {
             LOG.warn("Failed to read VIDEO_TS.IFO file: %s", ex.getMessage());
             LOG.info("Reading BUP from mount %s", dvdDir);
             readVmgFile(dvdDir, "VIDEO_TS/VIDEO_TS.BUP");
@@ -171,7 +171,7 @@ public class IfoReader {
             try {
                 LOG.info("Reading VTS_%02d_0.IFO", vtsn);
                 readVtsFile(vtsnTitles, dvdDir, String.format("VIDEO_TS/VTS_%02d_0.IFO", vtsn));
-            } catch (IfoException | EOFException ex) {
+            } catch (IOException ex) {
                 try {
                     LOG.warn("Failed to read VTS IFO file: %s", ex.getMessage());
                     LOG.info("Reading VTS_%02d_0.BUP", vtsn);
