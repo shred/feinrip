@@ -52,6 +52,8 @@ public class Project {
     private Dimension size = null;
     private AspectRatio aspect = AspectRatio.ASPECT_4_3;
 
+    private int audioSyncOffset = 0;
+
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     private final PropertyChangeListener listener = new PropertyChangeListener() {
         @Override
@@ -232,6 +234,16 @@ public class Project {
         AspectRatio old = this.aspect;
         this.aspect = aspect;
         support.firePropertyChange("aspect", old, aspect);
+    }
+
+    /**
+     * Audio tracks sync offset, in ms.
+     */
+    public int getAudioSyncOffset()             { return audioSyncOffset; }
+    public void setAudioSyncOffset(int audioSyncOffset) {
+        int old = this.audioSyncOffset;
+        this.audioSyncOffset = audioSyncOffset;
+        support.firePropertyChange("audioSyncOffset", old, audioSyncOffset);
     }
 
     public void addPropertyChangeListener(PropertyChangeListener l) {

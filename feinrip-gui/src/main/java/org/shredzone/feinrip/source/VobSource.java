@@ -111,6 +111,7 @@ public class VobSource extends AbstractSource {
 
             project.setSize(analyzer.getDimension());
             project.setAspect(analyzer.getAspect());
+            project.setAudioSyncOffset(0);
         } catch (IOException ex) {
             ErrorDialog.showException(ex);
         }

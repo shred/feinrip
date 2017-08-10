@@ -194,6 +194,11 @@ public class MkvEncoder {
                     .filter(Audio::isEnabled)
                     .forEach(audio -> {
                         Integer mkvStreamId = audioMap.get(audio).mkvStreamId;
+
+                        if (project.getAudioSyncOffset() != 0) {
+                            mergeCmd.param("--sync", mkvStreamId + ":" + project.getAudioSyncOffset());
+                        }
+
                         if (mkvStreamId != null) {
                             mergeCmd.param("--language", mkvStreamId + ":" + audio.getLanguage());
                         }
@@ -225,6 +230,10 @@ public class MkvEncoder {
             File audioFile = audioMap.get(audio).file;
             if (audioFile != null) {
                 mergeCmd.param("--language", "0:" + audio.getLanguage());
+
+                if (project.getAudioSyncOffset() != 0) {
+                    mergeCmd.param("--sync", "0:" + project.getAudioSyncOffset());
+                }
 
                 if (project.getDefAudio() == audio) {
                     mergeCmd.param("--default-track", 0);

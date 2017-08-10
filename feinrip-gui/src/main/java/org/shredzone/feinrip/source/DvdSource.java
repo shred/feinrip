@@ -80,6 +80,9 @@ public class DvdSource extends AbstractSource implements TrackableSource {
             eitFile = null;
         }
 
+        // Reset audio sync offset on device changes.
+        project.setAudioSyncOffset(0);
+
         firePropertyChange("source.device", oldDevice, device);
         firePropertyChange("source.mountPoint", oldMountPoint, mountPoint);
     }
@@ -217,6 +220,7 @@ public class DvdSource extends AbstractSource implements TrackableSource {
 
         project.setAspect(track != null ? track.getAspect() : null);
         project.setSize(track != null ? track.getDimension() : null);
+        // project.setAudioSyncOffset is unchanged on track changes.
     }
 
     @Override

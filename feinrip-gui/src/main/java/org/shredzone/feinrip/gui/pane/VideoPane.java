@@ -18,14 +18,19 @@ package org.shredzone.feinrip.gui.pane;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
+import java.text.NumberFormat;
 import java.util.EnumMap;
 import java.util.ResourceBundle;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
 
 import org.shredzone.feinrip.gui.JLabelGroup;
 import org.shredzone.feinrip.model.AspectRatio;
@@ -40,11 +45,15 @@ import org.shredzone.feinrip.model.Project;
 public class VideoPane extends PowerPane {
     private static final long serialVersionUID = -1015879881465391175L;
 
+    private static final int AUDIO_RESYNC_MAX = 30000;
+    private static final int AUDIO_RESYNC_STEP = 100;
+
     private static final ResourceBundle B = ResourceBundle.getBundle("message");
 
     private final EnumMap<AspectRatio, JRadioButton> jrAspects = new EnumMap<>(AspectRatio.class);
 
     private JTextField jtfDimension;
+    private JSpinner jspAudioSync;
 
     public VideoPane(Project project) {
         super(project);
@@ -76,6 +85,19 @@ public class VideoPane extends PowerPane {
         add(lg = new JLabelGroup(jpRadios, B.getString("pane.video.aspect"), lg));
         JLabelGroup.setMinimumHeight(lg);
 
+        JPanel jpSync = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        jpSync.setBorder(null);
+        {
+            jspAudioSync = new JSpinner(new SpinnerNumberModel(
+                            0, -AUDIO_RESYNC_MAX, AUDIO_RESYNC_MAX, AUDIO_RESYNC_STEP));
+            jspAudioSync.addChangeListener(this::onAudioSyncChange);
+            jspAudioSync.setToolTipText(B.getString("pane.video.audioSync.tt"));
+            jpSync.add(jspAudioSync);
+            jpSync.add(new JLabel(" ms"));
+        }
+        add(lg = new JLabelGroup(jpSync, B.getString("pane.video.audioSync"), lg));
+        JLabelGroup.setMinimumHeight(lg);
+
         lg.rearrange();
     }
 
@@ -90,6 +112,11 @@ public class VideoPane extends PowerPane {
             sb.append("<br>").append(B.getString("pane.video.res")).append(' ').append(size);
         }
 
+        if (project.getAudioSyncOffset() != 0) {
+            String sync = NumberFormat.getIntegerInstance().format(project.getAudioSyncOffset());
+            sb.append("<br>").append(B.getString("pane.video.async")).append(' ').append(sync).append(" ms");
+        }
+
         getPowerTabModel().setBody(sb.toString());
     }
 
@@ -99,6 +126,10 @@ public class VideoPane extends PowerPane {
                 .filter(ar -> jrAspects.get(ar) == src)
                 .findAny()
                 .ifPresent(ar -> project.setAspect(ar));
+    }
+
+    private void onAudioSyncChange(ChangeEvent e) {
+        project.setAudioSyncOffset(((Number) jspAudioSync.getValue()).intValue());
     }
 
     @Override
@@ -113,6 +144,11 @@ public class VideoPane extends PowerPane {
                 if (rb != null) {
                     rb.setSelected(true);
                 }
+                updateBody();
+                break;
+
+            case "audioSyncOffset":
+                jspAudioSync.setValue(project.getAudioSyncOffset());
                 updateBody();
                 break;
         }
