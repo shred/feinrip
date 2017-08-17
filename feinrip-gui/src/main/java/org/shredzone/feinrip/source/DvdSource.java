@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.shredzone.feinrip.model.Audio;
 import org.shredzone.feinrip.model.Chapter;
@@ -187,14 +189,46 @@ public class DvdSource extends AbstractSource implements TrackableSource {
 
     @Override
     public void setupProject() {
+        Audio oldDefAudio = project.getDefAudio();
+        Subtitle oldDefSub = project.getDefSub();
+
+        Set<Audio> oldAudios = null;
+        if (project.getAudios() != null) {
+            oldAudios = project.getAudios().stream()
+                    .filter(Audio::isEnabled)
+                    .collect(Collectors.toSet());
+            if (oldAudios.isEmpty()) {
+                oldAudios = null;
+            }
+        }
+
+        Set<Subtitle> oldSubs = null;
+        if (project.getSubs() != null) {
+            oldSubs = project.getSubs().stream()
+                    .filter(Subtitle::isEnabled)
+                    .collect(Collectors.toSet());
+            if (oldSubs.isEmpty()) {
+                oldSubs = null;
+            }
+        }
+
         project.setDefAudio(null);
         project.setDefSub(null);
 
+        // Set list of Audio tracks
         List<Audio> audios = dvd.getAudios(getSelectedTrackNr());
         project.setAudios(audios);
         if (audios.size() == 1) {
             // If there is only one audio stream, make it the default
             project.setDefAudio(audios.get(0));
+
+        } else if(oldDefAudio != null) {
+            // If there is a default audio from the previous selection, use it
+            audios.stream()
+                    .filter(audio -> oldDefAudio.getStreamId() == audio.getStreamId())
+                    .filter(audio -> oldDefAudio.getLanguage().equals(audio.getLanguage()))
+                    .findFirst()
+                    .ifPresent(audio -> project.setDefAudio(audio));
 
         } else {
             // If there is a stream of the user's language, make it the default
@@ -204,12 +238,44 @@ public class DvdSource extends AbstractSource implements TrackableSource {
                     .findFirst()
                     .ifPresent(audio -> project.setDefAudio(audio));
         }
+
+        if (oldAudios != null) {
+            for (Audio audio : audios) {
+                audio.setEnabled(oldAudios.stream().anyMatch(oa ->
+                           oa.isAvailable()
+                        && oa.getStreamId() == audio.getStreamId()
+                        && oa.getLanguage().equals(audio.getLanguage())
+                ));
+            }
+        }
+
         project.touchAudios();
 
+        // Set list of Subtitle tracks
         List<Subtitle> subtitles = dvd.getSubtitles(getSelectedTrackNr());
         project.setSubs(subtitles);
+
+        if(oldDefSub != null) {
+            // If there is a default subtitle from the previous selection, use it
+            subtitles.stream()
+                    .filter(sub -> oldDefSub.getStreamId().equals(sub.getStreamId()))
+                    .filter(sub -> oldDefSub.getLanguage().equals(sub.getLanguage()))
+                    .findFirst()
+                    .ifPresent(sub -> project.setDefSub(sub));
+        }
+
+        if (oldSubs != null) {
+            for (Subtitle sub : subtitles) {
+                sub.setEnabled(oldSubs.stream().anyMatch(os ->
+                           os.getStreamId().equals(sub.getStreamId())
+                        && os.getLanguage().equals(sub.getLanguage())
+                ));
+            }
+        }
+
         project.touchSubs();
 
+        // Set Chapters
         if (track != null) {
             project.setChapters(dvd.getChapters(getSelectedTrackNr()));
         } else {
@@ -218,6 +284,7 @@ public class DvdSource extends AbstractSource implements TrackableSource {
         }
         project.touchChapters();
 
+        // Set other parameters
         project.setAspect(track != null ? track.getAspect() : null);
         project.setSize(track != null ? track.getDimension() : null);
         // project.setAudioSyncOffset is unchanged on track changes.

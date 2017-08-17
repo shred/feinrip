@@ -93,8 +93,11 @@ public class JTrackList extends JList<Track> implements ListSelectionListener, P
     public void valueChanged(ListSelectionEvent e) {
         if (tracks != null) {
             Track selection = getSelectedValue();
-            tracks.setSelectedTrack(selection);
-            tracks.setupProject();
+            Track previous = tracks.getSelectedTrack();
+            if (selection != previous) {
+                tracks.setSelectedTrack(selection);
+                tracks.setupProject();
+            }
         }
     }
 
