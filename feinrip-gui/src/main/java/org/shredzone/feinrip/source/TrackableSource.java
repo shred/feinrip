@@ -43,6 +43,9 @@ public interface TrackableSource extends Source {
 
     /**
      * Select the next track, if applicable.
+     *
+     * @throws IndexOutOfBoundsException
+     *             if the last track has been reached, and there is no next track.
      */
     void nextTrack();
 

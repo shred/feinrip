@@ -168,11 +168,15 @@ public class DvdSource extends AbstractSource implements TrackableSource {
     @Override
     public void nextTrack() {
         if (tracks != null && track != null) {
-            int next = getSelectedTrackNr() + 1;
+            // getSelectedTrackNr starts counting at 1, tracks index is 0 based.
+            // This means that next is already what we are looking for, index-wise.
+            int next = getSelectedTrackNr();
             int max = tracks.size();
 
             if (next < max) {
                 setSelectedTrack(tracks.get(next));
+            } else {
+                throw new IndexOutOfBoundsException("reached last track");
             }
         }
     }

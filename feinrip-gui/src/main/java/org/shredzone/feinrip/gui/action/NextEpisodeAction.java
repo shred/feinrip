@@ -15,6 +15,7 @@
  */
 package org.shredzone.feinrip.gui.action;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -23,6 +24,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 import org.shredzone.feinrip.database.TvdbService.TvdbEpisode;
 import org.shredzone.feinrip.model.Project;
@@ -73,12 +75,29 @@ public class NextEpisodeAction extends AbstractSyncAction implements PropertyCha
         if (episodes != null && episode != null) {
             int ix = episodes.indexOf(episode) + 1;
             if (ix < episodes.size()) {
-                project.setEpisode(episodes.get(ix));
-
+                boolean nextEpisodeOk = true;
                 Source src = project.getSource();
                 if (src != null && src instanceof TrackableSource) {
-                    ((TrackableSource) src).nextTrack();
+                    try {
+                        ((TrackableSource) src).nextTrack();
+                    } catch (IndexOutOfBoundsException ex) {
+                        nextEpisodeOk = false;
+                        JOptionPane.showMessageDialog(
+                                (Component) e.getSource(),
+                                B.getString("action.next.lasttrack"),
+                                B.getString("action.next.title"),
+                                JOptionPane.ERROR_MESSAGE);
+                    }
                 }
+                if (nextEpisodeOk) {
+                    project.setEpisode(episodes.get(ix));
+                }
+            } else {
+                JOptionPane.showMessageDialog(
+                                (Component) e.getSource(),
+                                B.getString("action.next.lastepisode"),
+                                B.getString("action.next.title"),
+                                JOptionPane.ERROR_MESSAGE);
             }
         }
     }
