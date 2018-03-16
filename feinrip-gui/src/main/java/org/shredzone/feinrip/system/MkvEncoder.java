@@ -115,9 +115,8 @@ public class MkvEncoder {
     private Map<Integer, Integer> getStreamMap() throws IOException {
         Command mergeCmd = new Command(MKVMERGE);
         mergeCmd.param("--ui-language", "en_US");
-        mergeCmd.param("--identify-verbose");
+        mergeCmd.param("--identify");
         mergeCmd.param(vobFile);
-
         Map<Integer, Integer> result = new HashMap<>();
 
         mergeCmd.redirectOutput(line -> {
