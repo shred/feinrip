@@ -23,10 +23,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.shredzone.feinrip.model.Audio;
 import org.shredzone.feinrip.model.Project;
 import org.shredzone.feinrip.progress.LogConsumer;
@@ -52,7 +53,6 @@ import org.shredzone.feinrip.util.Command;
  */
 public class MkvEncoder {
     private static final File MKVMERGE  = new File("/usr/bin/mkvmerge");
-    private static final Pattern TRACK_PATTERN = Pattern.compile("Track ID (\\d+):.*stream_id:([0-9a-fA-F]+).sub_stream_id:([0-9a-fA-F]+).*");
 
     private final Map<Audio, ExtAudio> audioMap = new HashMap<>();
 
@@ -114,29 +114,39 @@ public class MkvEncoder {
      */
     private Map<Integer, Integer> getStreamMap() throws IOException {
         Command mergeCmd = new Command(MKVMERGE);
-        mergeCmd.param("--ui-language", "en_US");
+        mergeCmd.param("--identification-format", "json");
         mergeCmd.param("--identify");
         mergeCmd.param(vobFile);
-        Map<Integer, Integer> result = new HashMap<>();
 
-        mergeCmd.redirectOutput(line -> {
-            Matcher m = TRACK_PATTERN.matcher(line);
-            if (m.matches()) {
-                int streamId = Integer.parseInt(m.group(2), 16);
-                int substreamId = Integer.parseInt(m.group(3), 16);
-                int index = Integer.parseInt(m.group(1));
-
-                if (substreamId > 0) {
-                    result.put(substreamId, index);
-                } else {
-                    result.put(streamId, index);
-                }
-            }
-        });
-
+        StringBuilder sb = new StringBuilder();
+        mergeCmd.redirectOutput(sb::append);
         mergeCmd.execute();
 
-        return result;
+        try {
+            Map<Integer, Integer> result = new HashMap<>();
+
+            JSONObject json = (JSONObject) new JSONTokener(sb.toString()).nextValue();
+            JSONArray tracks = json.getJSONArray("tracks");
+            for (int ix = 0; ix < tracks.length(); ix++) {
+                JSONObject t = tracks.getJSONObject(ix);
+                if ("audio".equals(t.getString("type"))) {
+                    JSONObject prop = t.getJSONObject("properties");
+                    int index = t.getInt("id");
+                    int streamId = prop.getInt("stream_id");
+                    int substreamId = prop.getInt("sub_stream_id");
+
+                    if (substreamId > 0) {
+                        result.put(substreamId, index);
+                    } else {
+                        result.put(streamId, index);
+                    }
+                }
+            }
+
+            return result;
+        } catch (JSONException ex) {
+            throw new IOException("Could not parse JSON", ex);
+        }
     }
 
     /**
