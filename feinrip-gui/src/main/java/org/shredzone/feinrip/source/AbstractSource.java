@@ -68,14 +68,14 @@ public abstract class AbstractSource implements Source {
     public String resolveTargetFileName() {
         String result = project.getOutput();
 
-        result = result.replace("%t", project.getTitle().replace('/', '_'));
+        result = result.replace("%t", fixNamePart(project.getTitle()));
 
         TvdbEpisode episode = project.getEpisode();
         if (episode != null) {
             result = result.replace("%ss", String.format("%02d", episode.getSeason()));
             result = result.replace("%s", String.valueOf(episode.getSeason()));
             result = result.replace("%ee", String.format("%02d", episode.getEpisode()));
-            result = result.replace("%et", episode.getTitle());
+            result = result.replace("%et", fixNamePart(episode.getTitle()));
             result = result.replace("%e", String.valueOf(episode.getEpisode()));
 
         } else {
@@ -87,6 +87,14 @@ public abstract class AbstractSource implements Source {
         }
 
         return result;
+    }
+
+    private static String fixNamePart(String str) {
+        return str.replaceFirst("^\\.", "")
+                        .replaceAll("['\"`']", "")
+                        .replaceAll("[/\\:$~<|>]", " ")
+                        .replaceAll("\\s+", " ")
+                        .trim();
     }
 
     @Override
