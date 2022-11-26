@@ -46,7 +46,7 @@ public class LanguageUtils {
     private static final File MKVMERGE = new File("/usr/bin/mkvmerge");
 
     private static final ResourceBundle B = ResourceBundle.getBundle("message");
-    private static final Pattern LANGUAGE_PATTERN = Pattern.compile("(.*?)(?:\\;[^|]+)?\\s*\\|\\s+([a-z]+)\\s+\\|(?:\\s+([a-z]+))?.*");
+    private static final Pattern LANGUAGE_PATTERN = Pattern.compile("(.*?)(?:\\;[^|]+)?\\s*\\|\\s+([a-z]+)\\s+\\|\\s+([a-z]+)\\s+\\|(?:\\s+([a-z]+))?.*");
 
     private static Map<String, Language> langMap;
     private static List<Language> langList;
@@ -69,7 +69,7 @@ public class LanguageUtils {
                             if (m.matches()) {
                                 String name = m.group(1).trim();
                                 String iso2 = m.group(2);
-                                String iso1 = m.group(3);
+                                String iso1 = m.group(4);
                                 Language lng = new Language(name, iso1, iso2);
                                 if (lng.getIso1() != null) {
                                     langMap.put(lng.getIso1(), lng);
@@ -175,6 +175,10 @@ public class LanguageUtils {
     public static Language findLanguage(String code) {
         loadLanguages();
         return langMap.get(code);
+    }
+
+    public static void main(String[] args) {
+        LanguageUtils.getLanguages().stream().map(Language::getIso1).forEach(System.err::println);
     }
 
 }

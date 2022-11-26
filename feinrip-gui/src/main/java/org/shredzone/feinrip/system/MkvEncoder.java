@@ -209,7 +209,7 @@ public class MkvEncoder {
                         }
 
                         if (mkvStreamId != null) {
-                            mergeCmd.param("--language", mkvStreamId + ":" + audio.getLanguage());
+                            mergeCmd.param("--language", mkvStreamId + ":" + audio.getLanguage().toShortString());
                         }
                     });
 
@@ -238,7 +238,7 @@ public class MkvEncoder {
         project.getAudios().forEach(audio -> {
             File audioFile = audioMap.get(audio).file;
             if (audioFile != null) {
-                mergeCmd.param("--language", "0:" + audio.getLanguage());
+                mergeCmd.param("--language", "0:" + audio.getLanguage().toShortString());
 
                 if (project.getAudioSyncOffset() != 0) {
                     mergeCmd.param("--sync", "0:" + project.getAudioSyncOffset());
@@ -255,7 +255,7 @@ public class MkvEncoder {
         project.getSubs().forEach(sub -> {
             File subFile = vobsubFiles.get(sub.getIndex());
             if (sub.isEnabled() && subFile != null) {
-                mergeCmd.param("--language", "0:" + sub.getLanguage());
+                mergeCmd.param("--language", "0:" + sub.getLanguage().toShortString());
                 mergeCmd.param("--default-track", project.getDefSub() == sub ? "0:1" : "0:0");
                 mergeCmd.param(subFile);
             }

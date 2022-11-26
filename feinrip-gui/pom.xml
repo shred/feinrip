@@ -73,7 +73,7 @@
                         <require>ffmpeg &gt;= 2.1.0</require>
                         <require>mplayer &gt;= 1.1</require>
                         <require>mencoder &gt;= 1.1</require>
-                        <require>mkvtoolnix &gt;= 7.4.0</require>
+                        <require>mkvtoolnix &gt;= 72.0.0</require>
                         <require>transcode &gt;= 1.1.7</require>
                         <require>java-1.8.0-openjdk</require>
                         <require>sed</require><!-- for installation only -->
