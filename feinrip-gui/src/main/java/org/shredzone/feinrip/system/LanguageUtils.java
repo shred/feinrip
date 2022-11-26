@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TreeSet;
@@ -69,7 +70,6 @@ public class LanguageUtils {
                                 String name = m.group(1).trim();
                                 String iso2 = m.group(2);
                                 String iso1 = m.group(3);
-
                                 Language lng = new Language(name, iso1, iso2);
                                 if (lng.getIso1() != null) {
                                     langMap.put(lng.getIso1(), lng);
@@ -82,8 +82,12 @@ public class LanguageUtils {
                 mergeCmd.execute();
 
                 // Add exceptions that can be found on some DVDs
-                langMap.put("xx", langMap.get("und"));  // undefined
-                langMap.put("iw", langMap.get("he"));   // hebrew
+                Optional.ofNullable(langMap.get("und"))
+                        .ifPresent(v -> langMap.put("xx", v));
+                Optional.ofNullable(langMap.get("he"))
+                        .ifPresent(v -> langMap.put("iw", v));
+                Optional.ofNullable(langMap.get("heb"))
+                        .ifPresent(v -> langMap.put("iw", v));
 
                 sortLanguages();
             } catch (IOException ex) {
@@ -103,9 +107,9 @@ public class LanguageUtils {
      * </ol>
      */
     private static void sortLanguages() {
-        langList = new ArrayList<Language>();
+        langList = new ArrayList<>();
 
-        Set<String> seen = new TreeSet<String>();
+        Set<String> seen = new TreeSet<>();
 
         // First add all preferred languages
         Stream.of(B.getString("language.preferred").split("[ ,;]+")).forEach(it -> {
