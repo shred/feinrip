@@ -5,7 +5,7 @@
   <version position="right"/>
   <body>
     <links>
-      <item name="GitHub" href="https://github.com/shred/feinrip"/>
+      <item name="Repository" href="https://codeberg.org/shred/feinrip"/>
     </links>
     <breadcrumbs>
       <item name="shredzone.org" href="http://www.shredzone.org"/>

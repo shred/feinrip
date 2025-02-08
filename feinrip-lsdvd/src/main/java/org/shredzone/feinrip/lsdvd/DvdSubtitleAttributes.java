@@ -2,7 +2,7 @@
  * feinrip
  *
  * Copyright (C) 2016 Richard "Shred" Körber
- *   https://github.com/shred/feinrip
+ *   https://codeberg.org/shred/feinrip
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as

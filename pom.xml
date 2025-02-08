@@ -3,7 +3,7 @@
  feinrip
 
  Copyright (C) 2014 Richard "Shred" Körber
-   https://github.com/shred/feinrip
+   https://codeberg.org/shred/feinrip
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as
@@ -25,15 +25,15 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <url>https://github.com/shred/feinrip</url>
+    <url>https://codeberg.org/shred/feinrip</url>
     <scm>
-        <url>https://github.com/shred/feinrip/</url>
-        <connection>scm:git:git@github.com:shred/feinrip.git</connection>
-        <developerConnection>scm:git:git@github.com:shred/feinrip.git</developerConnection>
+        <url>https://codeberg.org/shred/feinrip/</url>
+        <connection>scm:git:git@codeberg.org:shred/feinrip.git</connection>
+        <developerConnection>scm:git:git@codeberg.org:shred/feinrip.git</developerConnection>
     </scm>
     <issueManagement>
-        <system>GitHub Issues</system>
-        <url>https://github.com/shred/feinrip/issues</url>
+        <system>Codeberg Issues</system>
+        <url>https://codeberg.org/shred/feinrip/issues</url>
     </issueManagement>
     <developers>
         <developer>
